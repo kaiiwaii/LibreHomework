@@ -7,6 +7,7 @@ async def setup_tables(db):
         CREATE TABLE IF NOT EXISTS users (
             username VARCHAR(32) PRIMARY KEY,
             password VARCHAR(64) NOT NULL,
+            salt VARCHAR(10) NOT NULL,
             email VARCHAR(320), 
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             discord VARCHAR(32),
@@ -27,11 +28,12 @@ async def list_users(db, page):
 
     
 async def add_user(db, username, password, email, discord, twitter, bio):
+    hp = utils.hash(password.encode("utf8")) # Get hashed password and the used salt
     async with db.cursor() as c:
         await c.execute("""
-    INSERT INTO users (username, password, email, discord, twitter, bio)
-    VALUES (?, ?, ?, ?, ?, ?)
-    """, (username, utils.hash(password.encode("utf8")), email, discord, twitter, bio,))
+        INSERT INTO users (username, password, salt, email, discord, twitter, bio)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (username, hp[0], hp[1], email, discord, twitter, bio,))
         await db.commit()
 
         if q.rowcount == 0:
@@ -51,6 +53,15 @@ async def remove_user(db, username, password):
             return False
         else:
             return True
+
+
+
+async def login():
+    pass
+
+
+async def update_user(db, username, password, key, value):
+    return 
 
 
 async def find_user(db, username):

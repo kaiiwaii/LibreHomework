@@ -1,0 +1,44 @@
+{
+    "es": {
+        "summary": "Herramientas para la eficiencia del estudio.",
+        "lock_screen": "Bloquear pantalla",
+        "unlock_screen": "Desbloquear pantalla",
+        "timed_lock": "Bloqueo cronometrado",
+        "homework": "Tareas",
+        "schedule": "Horario",
+        "organization": "Organización",
+        "settings": "Ajustes",
+        "no_activities_left": "¡Yey! No tienes actividades pendientes",
+        "no_activities_detail": "¿Debes hacer algo mas tarde?, agrégalo aquí.",
+        "add": "Agregar",
+        "write_essay": "Escribir un ensayo"
+    },
+    "en": {
+        "summary": "Tools for study efficiency.",
+        "lock_screen": "Lock screen",
+        "unlock_screen": "Unlock screen",
+        "timed_lock": "Timed lock",
+        "homework": "Homework",
+        "schedule": "Schedule",
+        "organization": "Organization",
+        "settings": "Settings",
+        "no_activities_left": "Yay! You have no tasks left",
+        "no_activities_detail": "Got to do something later?, note it here.",
+        "add": "Add",
+        "write_essay": "Write an essay"
+    },
+    "eo": {
+        "summary": "Iloj por studi pli facile.",
+        "lock_screen": "Ŝlosi ekranon",
+        "unlock_screen": "Malŝlosi ekranon",
+        "timed_lock": "Bloqueo cronometrado",
+        "homework": "Taskoj",
+        "schedule": "Horaro",
+        "organization": "Organizado",
+        "settings": "Agordoj",
+        "no_activities_left": "¡Jej! Vi ne havas mankantajn taskojn",
+        "no_activities_detail": "Ĉu vi devas fari ion poste? Skribu ĝin tie ĉi.",
+        "add": "Aldoni",
+        "write_essay": "Skribi eseon"
+    }
+}

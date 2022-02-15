@@ -21,12 +21,12 @@ def args_checker(needs_login):
                 
 
             if f.__name__ == "signup":
-                username = request.args.get("username")
-                password = request.args.get("password")
-                email = request.args.get("email")
-                discord = request.args.get("discord")
-                twitter = request.args.get("twitter")
-                bio = request.args.get("bio")
+                username = request.form.get("username")
+                password = request.form.get("password")
+                email = request.form.get("email")
+                discord = request.form.get("discord")
+                twitter = request.form.get("twitter")
+                bio = request.form.get("bio")
 
                 if not username or not password:
                     return json({"error": "Missing username or password"})
@@ -53,8 +53,8 @@ def args_checker(needs_login):
 
         
             if needs_login:
-                username = request.args.get("username")
-                password = request.args.get("password")
+                username = request.form.get("username")
+                password = request.form.get("password")
             
                 if not username or not password:
                     return json({"error": "Missing username or password"})
