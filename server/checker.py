@@ -59,9 +59,7 @@ def args_checker(needs_login):
                 if not username or not password:
                     return json({"error": "Missing username or password"})
                 else:
-                    return json({"error": "Not logged in"})
-
-                return await f(request, *args, **kwargs)
+                    return await f(request, *args, **kwargs)
                 
             else:
                 return await f(request, *args, **kwargs)
