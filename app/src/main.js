@@ -5,10 +5,7 @@ import App from './App.svelte';
 
 
 const svapp = new App({
-	target: document.body,
-	props: {
-		name: 'LibreHomework'
-	}
+	target: document.body
 });
 
 let v = app.getVersion();
@@ -19,7 +16,7 @@ let v = app.getVersion();
 //console.log(appWindow.label)
 //let lock = new ScreenLock().Block()
 
-invoke("get_local_lang").then((v) => console.log(v));
+//invoke("get_local_lang").then((v) => console.log(v));
 invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
 
 export default svapp;
