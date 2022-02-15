@@ -4,8 +4,10 @@
 )]
 
 mod db;
+mod models;
 mod utils;
 mod notify;
+
 
 use tauri::{Manager, RunEvent};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -49,6 +51,8 @@ fn main() {
       setScreenLock,
       get_local_lang,
       addTask,
+      removeTask,
+      getTasks,
       notify
     ])
     .build(tauri::generate_context!())

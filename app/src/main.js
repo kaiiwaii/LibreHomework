@@ -21,6 +21,5 @@ let v = app.getVersion();
 
 invoke("get_local_lang").then((v) => console.log(v));
 invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
-invoke("addTask", {name: "Test", subject: "maths", description: "AAA", "expiresAt": "1642616647"}).then(() => console.log("addTask")).then(() => console.log("addTask"));
 
 export default svapp;

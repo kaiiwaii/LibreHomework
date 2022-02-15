@@ -2,20 +2,19 @@ use rusqlite::{params, Connection, Result};
 use std::sync::Mutex;
 use tauri::State;
 use crate::utils::stop_app;
+use crate::models::*;
 
 
 #[derive(Debug)]
 pub struct DBManager(Mutex<Connection>);
 
-
-//try with sqlite3 instead of rusqlite
 impl DBManager {
     pub fn prepare_connection(path: &std::path::Path) -> DBManager {
       let conn = Connection::open(path).unwrap_or_else(|_| stop_app("Error connecting to the database"));
 
       conn.execute("CREATE TABLE IF NOT EXISTS Subjects (name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
 
-      conn.execute("CREATE TABLE IF NOT EXISTS Tasks (name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME, 
+      conn.execute("CREATE TABLE IF NOT EXISTS Tasks (name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME NOT NULL, 
       FOREIGN KEY(subject) REFERENCES Subjects(name));", []).unwrap_or_else(|_| stop_app("Error creating table Tasks"));
       return DBManager(Mutex::new(conn));
     }
@@ -35,6 +34,30 @@ pub fn addTask(db: State<DBManager>, name: &str, subject: &str, description: &st
    params![name, subject, description, expiration_date_parsed]).unwrap_or_else(|_| stop_app("Error inserting task")); //maybe too agressive?
 
    Ok(())
+}
+
+#[tauri::command]
+pub fn removeTask(db: State<DBManager>, name: &str) -> Result<(), String> {
+
+  db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
+  .execute("DELETE FROM Tasks WHERE name = ?1", params![name]).unwrap_or_else(|_| stop_app("Error removing task")); //maybe too agressive?
+
+   Ok(())
+}
+
+#[tauri::command]
+pub fn getTasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task>, String> {
+
+  let mut vec: Vec<Task> = Vec::new();
+
+  let conn = db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"));
+  let mut query = conn.prepare("SELECT * FROM Tasks LIMIT ?1 OFFSET ?2").unwrap_or_else(|_| stop_app("Error preparing query"));//maybe too agressive?
+  let mut rows = query.query(params![limit, page * 20]).unwrap_or_else(|_| stop_app("Error querying"));
+  while let Some(row) = rows.next().unwrap_or_else(|_| stop_app("Error iterating")) {
+    vec.push(Task::from_row(&row).unwrap_or_else(|_| stop_app("Error parsing row")));
+  }
+
+  Ok(vec)
 }
 
 #[tauri::command]

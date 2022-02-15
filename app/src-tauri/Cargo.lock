@@ -55,6 +55,7 @@ version = "0.1.0"
 dependencies = [
  "notify-rust",
  "rusqlite",
+ "serde",
  "tauri",
  "tauri-build",
 ]
