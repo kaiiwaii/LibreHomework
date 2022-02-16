@@ -1,4 +1,5 @@
 import { app, invoke} from '@tauri-apps/api';
+import ConfigManager from './configmanager';
 //import { ScreenLock } from './screenlock';
 import App from './App.svelte';
 
@@ -18,5 +19,6 @@ let v = app.getVersion();
 
 //invoke("get_local_lang").then((v) => console.log(v));
 invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
-
+invoke("config_changeOption", {key: "lang", value: "es"}).then(() => console.log("config_changeOption"));
+ConfigManager.initDefaultConfig();
 export default svapp;

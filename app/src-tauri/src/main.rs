@@ -49,7 +49,6 @@ fn main() {
       execute,
       getScreenLock,
       setScreenLock,
-      get_local_lang,
       addTask,
       removeTask,
       getTasks,
