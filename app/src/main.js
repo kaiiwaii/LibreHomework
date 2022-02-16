@@ -20,5 +20,6 @@ let v = app.getVersion();
 //invoke("get_local_lang").then((v) => console.log(v));
 invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
 invoke("config_changeOption", {key: "lang", value: "es"}).then(() => console.log("config_changeOption"));
-ConfigManager.initDefaultConfig();
+let conf = new ConfigManager()
+conf.initDefaultConfig().catch(err => console.log(err));
 export default svapp;
