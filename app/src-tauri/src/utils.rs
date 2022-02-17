@@ -17,7 +17,7 @@ pub fn read_config_file() -> Option<String> {
 }
 
 #[tauri::command]
-pub fn write_config_file(contents: &str) -> Option<()> {
+pub fn write_config_file(contents: &str) -> Option<bool> {
     let path = document_dir()?.join("LibreHomework");
 
     if !Path::new(&path).exists() {
@@ -33,5 +33,5 @@ pub fn write_config_file(contents: &str) -> Option<()> {
         .open(path.join("config.json"))
         .ok()?;
     file.write_all(contents.as_bytes()).ok()?;
-    Some(())
+    Some(true)
 }
