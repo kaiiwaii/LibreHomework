@@ -52,7 +52,9 @@ fn main() {
       addTask,
       removeTask,
       getTasks,
-      notify
+      notify,
+      write_config_file,
+      read_config_file,
     ])
     .build(tauri::generate_context!())
     .expect("Error while running LibreHomework");
