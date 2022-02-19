@@ -23,6 +23,8 @@ fn main() {
     loop {
         let mut tasks = db.check().unwrap();
         tasks.sort_by(|t1, t2| t1.expires_at.cmp(&t2.expires_at));
+        println!("{:?}", tasks);
+
         let mut c = 0;
 
         while c < config.remind_limit.unwrap() && c < tasks.len() as u32 {
@@ -36,6 +38,11 @@ fn main() {
             }
             c += 1;
         }
+
+        if c < tasks.len() as u32 {
+            notify::notify(notify::LogType::Warning, &format!("More tasks not notified: {}", tasks.len() - c as usize));
+        }
+
 
         sleep(Duration::from_secs(config.remind_every.unwrap() as u64 * 60));
     }

@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Result};
 use dirs_next::document_dir;
 
-
+#[derive(Debug)]
 pub struct Task {
     pub name: String,
     pub subject: String,
