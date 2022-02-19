@@ -21,10 +21,22 @@ fn main() {
     }
 
     loop {
-        let tasks = db.check().unwrap();
-        for task in tasks {
-            notify::notify(notify::LogType::Info, &("Remember to do: ".to_string() + &task.name));
+        let mut tasks = db.check().unwrap();
+        tasks.sort_by(|t1, t2| t1.expires_at.cmp(&t2.expires_at));
+        let mut c = 0;
+
+        while c < config.remind_limit.unwrap() && c < tasks.len() as u32 {
+            let task = tasks.get(c as usize).unwrap();
+
+            if task.expires_at < std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs() {
+                notify::notify(notify::LogType::Warning, &format!("Task {} is expired", task.name));
+
+            } else {
+                notify::notify(notify::LogType::Info, &format!("Task {} expires in {} minutes", task.name, (task.expires_at - std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs()) / 60));
+            }
+            c += 1;
         }
+
         sleep(Duration::from_secs(config.remind_every.unwrap() as u64 * 60));
     }
 }

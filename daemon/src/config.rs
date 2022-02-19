@@ -12,6 +12,7 @@ pub struct DaemonConfig {
     pub notify_on_error: Option<bool>,
     pub notify_on_warning: Option<bool>,
     pub remind_every: Option<u32>, //minutes
+    pub remind_limit: Option<u32>, 
     pub log_path: Option<String>,
 }
 
@@ -31,6 +32,7 @@ fn default_daemon_config() -> DaemonConfig {
         notify_on_error: Some(true),
         notify_on_warning: Some(true),
         remind_every: Some(30),
+        remind_limit: Some(5),
         log_path: Some(path),
     }
 }
