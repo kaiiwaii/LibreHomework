@@ -2,3 +2,4 @@ server/__pycache__/checker.cpython-38.pyc
 server/__pycache__/db.cpython-38.pyc
 server/__pycache__/utils.cpython-38.pyc
 server/librehomework.db
+/app/node_modules/
