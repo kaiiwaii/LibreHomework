@@ -20,20 +20,21 @@ async def list_users(db, page):
 
     temp = []
     async with db.cursor() as c:
-        await c.execute("SELECT username FROM users LIMIT 20 OFFSET ?", (page * 20,))
+        await c.execute("SELECT username, email FROM users LIMIT 20 OFFSET ?", (page * 20,))
         for row in await c.fetchall():
-            temp.append(row[0])
+            print(row)
+            temp.append({row[0]: utils.get_gravatar(row[1])})
         
     return temp
 
     
 async def add_user(db, username, password, email, discord, twitter, bio):
-    password = utils.hash(password.encode("utf8")) # Get hashed password and the used salt
+    password = utils.hash(password.encode("utf8"))
     async with db.cursor() as c:
         try:
-            await c.execute("""
+            q = await c.execute("""
             INSERT INTO users (username, password, email, discord, twitter, bio)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             """, (username, password, email, discord, twitter, bio,))
             await db.commit()
 

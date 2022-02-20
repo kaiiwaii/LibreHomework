@@ -39,7 +39,7 @@ async def login(req, username, password):
 async def signup(req, arg_list):
     res = await database.add_user(app.ctx.db, arg_list[0], arg_list[1], arg_list[2], arg_list[3], arg_list[4], arg_list[5])
     if not res:
-        return json({"error":"Error creating user in the database. If the error persists please open an issue"})
+        return json({"error":"Error creating user in the database. Maybe the username is already taken?"})
     else:
         return json({"status": 200})
 
