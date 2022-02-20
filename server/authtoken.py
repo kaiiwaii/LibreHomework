@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
 import datetime
 import os, struct
+import traceback
 
 fer = Fernet(os.environ["TOKEN_KEY"].encode("utf8"))
 
@@ -25,6 +26,7 @@ def validate_token(token):
 
         if diff.total_seconds() / 60 > ttl:
             return False
+            print("Expired token")
         else:
             return True, username
 

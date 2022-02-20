@@ -25,9 +25,9 @@ async def users(req, page):
 @checker.args_checker(False)
 async def login(req, username, password):
     if username and password:
-        res, tk = database.login(app.ctx.db, username, password)
+        res, tk = await database.login(app.ctx.db, username, password)
         if res:
-            return json({"auth-token": tk})
+            return json({"auth-token": tk.decode("utf8")})
         else:
             return json({"error": "Invalid username or password"})
     else:
@@ -47,8 +47,8 @@ async def signup(req, arg_list):
 @app.post("/remove")
 @checker.args_checker(True)
 async def remove_user(req, token):
-    res = await database.remove_user(app.ctx.db, req.form.get("username"), token)
-    if not error:
+    res = await database.remove_user(app.ctx.db, token.encode("utf8"))
+    if not res:
         return json({"error": "Error removing user from database. Is the token correct?"})
     else:
         return json({"status": 200})
@@ -64,12 +64,13 @@ async def find_users(req, username):
 @app.post("/edit")
 @checker.args_checker(True)
 async def edit_profile(req, token):
-    username = req.form.get("username")
+
     email = req.form.get("email")
     discord = req.form.get("discord")
     twitter = req.form.get("twitter")
     bio = req.form.get("bio")
-    res = await database.edit_profile(app.ctx.db, username, token, email, discord, twitter, bio)
+
+    res = await database.edit_user(app.ctx.db, token.encode("utf8"), email, discord, twitter, bio)
 
     if not res:
         return json({"error": "Error editing profile. If username and token are correct please open an issue"})
