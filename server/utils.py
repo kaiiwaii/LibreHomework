@@ -1,18 +1,11 @@
 from hashlib import blake2s, md5
 import random, string
+import os
 
-def salt(length):
-    letters = string.ascii_letters
-    return ''.join(
-        random.choice(letters) for _ in range(length)
-    ).encode()
+salt = os.environ["SALT"].encode("utf8")
 
-def hash(password, s=None):
-    if s and type(s) == bytes:
-        pass
-    else:
-        s = salt(10)
-    return (blake2s(password + s).hexdigest(), s)
+def hash(password):
+    return blake2s(password + salt).hexdigest()
 
 def get_gravatar(email):
     if email:

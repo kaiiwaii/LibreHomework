@@ -21,6 +21,19 @@ async def users(req, page):
     return json(users)
 
 
+@app.post("/login")
+@checker.args_checker(False)
+async def login(req, username, password):
+    if username and password:
+        res, tk = database.login(app.ctx.db, username, password)
+        if res:
+            return json({"auth-token": tk})
+        else:
+            return json({"error": "Invalid username or password"})
+    else:
+        return json({"error": "Missing username or password"})
+
+
 @app.post("/signup")
 @checker.args_checker(False)
 async def signup(req, arg_list):
@@ -33,34 +46,33 @@ async def signup(req, arg_list):
 
 @app.post("/remove")
 @checker.args_checker(True)
-async def remove_user(req):
-    res = await database.remove_user(app.ctx.db, req.form.get("username"), req.form.get("password"))
-    if not res:
-        return json({"error": "Error removing error from database. If username and password are correct please open an issue"})
+async def remove_user(req, token):
+    res = await database.remove_user(app.ctx.db, req.form.get("username"), token)
+    if not error:
+        return json({"error": "Error removing user from database. Is the token correct?"})
     else:
         return json({"status": 200})
 
 
 @app.get("/find/<username>")
 @checker.args_checker(False)
-async def find_user(req, username):
-    user = await database.find_user(app.ctx.db, username)
-    return json(user)
+async def find_users(req, username):
+    users = await database.find_user(app.ctx.db, username)
+    return json(users)
 
 
 @app.post("/edit")
 @checker.args_checker(True)
-async def edit_profile(req):
+async def edit_profile(req, token):
     username = req.form.get("username")
-    password = req.form.get("password")
     email = req.form.get("email")
     discord = req.form.get("discord")
     twitter = req.form.get("twitter")
     bio = req.form.get("bio")
-    res = await database.edit_profile(app.ctx.db, username, password, email, discord, twitter, bio)
+    res = await database.edit_profile(app.ctx.db, username, token, email, discord, twitter, bio)
 
     if not res:
-        return json({"error": "Error editing profile. If username and password are correct please open an issue"})
+        return json({"error": "Error editing profile. If username and token are correct please open an issue"})
     else:
         return json({"status": 200})
 
