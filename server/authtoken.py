@@ -1,4 +1,4 @@
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 import datetime
 import os, struct
 import traceback
@@ -25,11 +25,10 @@ def validate_token(token):
         diff = datetime.datetime.utcnow() - created_at
 
         if diff.total_seconds() / 60 > ttl:
-            return False
+            return False, None
             print("Expired token")
         else:
             return True, username
 
-    except Exception as e:
-        print(traceback.format_exc())
-        return False
+    except InvalidToken:
+        return False, None
