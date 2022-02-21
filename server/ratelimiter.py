@@ -48,17 +48,17 @@ class EndpointLimiter:
         def decorator(func):
             @wraps(func)
             async def wrapper(request, *args, **kwargs):
-                if request.path == "/users/":
+                if request.path == "/users":
                     return await self.users_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/login/":
+                elif request.path == "/login":
                     return await self.login_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/signup/":
+                elif request.path == "/signup":
                     return await self.signup_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/remove/":
+                elif request.path == "/remove":
                     return await self.remove_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/find/":
+                elif request.path == "/find":
                     return await self.find_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/edit/":
+                elif request.path == "/edit":
                     return await self.edit_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
             return wrapper
         return decorator

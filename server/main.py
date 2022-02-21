@@ -2,6 +2,7 @@ from sanic import Sanic
 from sanic.exceptions import NotFound, InvalidUsage, MethodNotSupported
 from sanic.response import json, redirect
 import aiosqlite
+import traceback
 
 from ratelimiter import EndpointLimiter
 import db as database
@@ -21,8 +22,10 @@ async def setup_db(app, loop):
 async def index(request):
     return redirect("/users/0")
 
+
 @app.exception(Exception)
 async def catch_anything(request, exception):
+    print(traceback.print_exc())
     if isinstance(exception, NotFound):
         return json({"error": "Not Found"}, status=404)
     elif isinstance(exception, InvalidUsage):
