@@ -60,5 +60,7 @@ class EndpointLimiter:
                     return await self.find_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
                 elif request.path == "/edit":
                     return await self.edit_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
+                else:
+                    return await func(request, *args, **kwargs)
             return wrapper
         return decorator
