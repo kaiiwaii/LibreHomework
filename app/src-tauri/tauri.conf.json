@@ -50,7 +50,14 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "window": {
+      	"all": true
+      },
+      
+      "fs": {
+      	"all": true,
+      	"scope": ["$DOCUMENT/LibreHomework/*"],
+      }
     },
     "windows": [
       {

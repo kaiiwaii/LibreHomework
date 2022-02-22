@@ -1,8 +1,9 @@
-import { tauri } from "@tauri-apps/api";
+/*import { tauri } from "@tauri-apps/api";*/
+import { writeFile, readTextFile } from '@tauri-apps/api/fs';
 
-class ConfigManager {
+export class ConfigManager {
     initDefaultConfig() {
-        tauri.fs.writeFile("$DOCUMENT/LibreHomework/config.json", JSON.stringify(
+        writeFile("$DOCUMENT/LibreHomework/config.json", JSON.stringify(
             { "misc": {"lang": "en"}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}), (err) => {
                 if (err) {
                     return err;
@@ -11,7 +12,7 @@ class ConfigManager {
     }
 
     readConfig() {
-        tauri.fs.readTextFile("$DOCUMENT/LibreHomework/config.json", (err, data) => {
+        readTextFile("$DOCUMENT/LibreHomework/config.json", (err, data) => {
             if (err) {
                 return error;
             } else {
@@ -20,5 +21,3 @@ class ConfigManager {
         });
     }
 }
-
-export default ConfigManager;
