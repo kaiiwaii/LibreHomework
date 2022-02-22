@@ -3,7 +3,7 @@ from sanic.response import json
 
 
 
-def args_checker(needs_login):
+def args_checker(needs_token):
     def decorator(f):
         @wraps(f)
         async def check(request, *args, **kwargs):
@@ -19,6 +19,13 @@ def args_checker(needs_login):
                 
                 return await f(request, *args, **kwargs)
                 
+            if f.__name__ == "login":
+                username = request.form.get("username")
+                password = request.form.get("password")
+                if username and password:
+                    return await f(request, username, password, *args, **kwargs)
+                else:
+                    return json({"error": "Missing username or password"})
 
             if f.__name__ == "signup":
                 username = request.form.get("username")
@@ -52,14 +59,13 @@ def args_checker(needs_login):
                 return await f(request, [username, password, email, discord, twitter, bio], *args, **kwargs)
 
         
-            if needs_login:
-                username = request.form.get("username")
-                password = request.form.get("password")
+            if needs_token:
+                token = request.form.get("token")
             
-                if not username or not password:
-                    return json({"error": "Missing username or password"})
+                if not token:
+                    return json({"error": "Missing token"})
                 else:
-                    return await f(request, *args, **kwargs)
+                    return await f(request, token, *args, **kwargs)
                 
             else:
                 return await f(request, *args, **kwargs)

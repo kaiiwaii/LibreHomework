@@ -6,14 +6,10 @@
 mod db;
 mod models;
 mod utils;
-mod notify;
-
-
 use tauri::{Manager, RunEvent};
 use std::sync::atomic::{AtomicBool, Ordering};
 use db::*;
 use utils::*;
-use notify::notify;
 
 
 static IS_LOCKED: AtomicBool = AtomicBool::new(false);
@@ -26,6 +22,7 @@ fn getScreenLock() -> bool {
 fn setScreenLock(val: bool) {
   IS_LOCKED.store(val, Ordering::Relaxed);
 }
+
 
 
 fn main() {
@@ -52,7 +49,8 @@ fn main() {
       addTask,
       removeTask,
       getTasks,
-      notify
+      write_config_file,
+      read_config_file,
     ])
     .build(tauri::generate_context!())
     .expect("Error while running LibreHomework");
@@ -71,3 +69,4 @@ fn main() {
     _ => {}
   })
 }
+

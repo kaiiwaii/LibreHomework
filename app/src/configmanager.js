@@ -1,23 +1,12 @@
-/*import { tauri } from "@tauri-apps/api";*/
-import { writeFile, readTextFile } from '@tauri-apps/api/fs';
+import { invoke } from "@tauri-apps/api/tauri";
 
 export class ConfigManager {
-    initDefaultConfig() {
-        writeFile("$DOCUMENT/LibreHomework/config.json", JSON.stringify(
-            { "misc": {"lang": "en"}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}), (err) => {
-                if (err) {
-                    return err;
-                }
-            });
+    async initDefaultConfig() {
+        return await invoke("write_config_file", {"contents": JSON.stringify(
+            { "misc": {"lang": "en"}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}, null, 4)});
     }
 
-    readConfig() {
-        readTextFile("$DOCUMENT/LibreHomework/config.json", (err, data) => {
-            if (err) {
-                return error;
-            } else {
-                return JSON.parse(data);
-            }
-        });
+    async readConfig() {
+        return await invoke("read_config_file");
     }
 }
