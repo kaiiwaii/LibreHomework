@@ -4,6 +4,7 @@ from sanic.response import json, redirect
 import aiosqlite
 import traceback
 
+from utils import update_daily_message
 from ratelimiter import EndpointLimiter
 import db as database
 import checker
@@ -17,11 +18,16 @@ async def setup_db(app, loop):
     temp_db = await aiosqlite.connect("librehomework.db")
     await database.setup_tables(temp_db)
     app.ctx.db = temp_db
+    app.ctx.dailymessage = "Nothing yet!"
 
 @app.get("/")
 async def index(request):
     return redirect("/users/0")
 
+@app.get("/dailymessage")
+@limiter.limit(5, 10)
+async def dailymessage(request):
+    return json({"message": app.ctx.dailymessage})
 
 @app.exception(Exception)
 async def catch_anything(request, exception):
@@ -97,7 +103,7 @@ async def edit_profile(req, token):
     discord = req.form.get("discord")
     twitter = req.form.get("twitter")
     bio = req.form.get("bio")
-
+    print(token)
     res = await database.edit_user(app.ctx.db, token.encode("utf8"), email, discord, twitter, bio)
 
     if not res:
@@ -106,4 +112,5 @@ async def edit_profile(req, token):
         return json({"status": 200})
 
 
-app.run(host="0.0.0.0", port=8000, debug=False, workers=2)
+app.add_task(update_daily_message(app))
+app.run(host="0.0.0.0", port=8000, debug=False, workers=4)

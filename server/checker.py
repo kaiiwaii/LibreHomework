@@ -1,8 +1,6 @@
 from functools import wraps
 from sanic.response import json
 
-
-
 def args_checker(needs_token):
     def decorator(f):
         @wraps(f)

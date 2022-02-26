@@ -43,6 +43,7 @@ class EndpointLimiter:
         self.remove_limiter = RateLimiter()
         self.find_limiter = RateLimiter()
         self.edit_limiter = RateLimiter()
+        self.daily_message_limiter = RateLimiter()
 
     def limit(self, calls, per_second):
         def decorator(func):
@@ -60,6 +61,8 @@ class EndpointLimiter:
                     return await self.find_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
                 elif request.path == "/edit":
                     return await self.edit_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
+                elif request.path == "/dailymessage":
+                    return await self.daily_message_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
                 else:
                     return await func(request, *args, **kwargs)
             return wrapper
