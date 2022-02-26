@@ -61,6 +61,27 @@ pub fn getTasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task>
 }
 
 #[tauri::command]
+pub fn getSubjects(db: State<DBManager>) -> Option<Vec<String>> {
+  let conn = db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"));
+  let mut query = conn.prepare("SELECT name FROM Subjects").unwrap_or_else(|_| stop_app("Error preparing query"));//maybe too agressive?
+  let mut rows = query.query([]).unwrap_or_else(|_| stop_app("Error querying"));
+  let mut vec: Vec<String> = Vec::new();
+  while let Some(row) = rows.next().unwrap_or_else(|_| stop_app("Error iterating")) {
+    vec.push(row.get(0).unwrap_or_else(|_| stop_app("Error parsing row")));
+  }
+  Some(vec)
+}
+
+#[tauri::command]
+pub fn addSubject(db: State<DBManager>, name: &str) -> Option<bool> {
+
+  db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
+  .execute("INSERT INTO Subjects (name) VALUES (?1)", params![name]).ok()?;
+
+  Some(true)
+}
+
+#[tauri::command]
 pub fn execute(db: State<DBManager>, query: String) {
   db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
   .execute(&query, []).expect("Error executing query");
