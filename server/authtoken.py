@@ -15,7 +15,7 @@ def generate_token(username,ttl):
 
 def validate_token(token):
     global fer
-    try:    
+    try:
         created_at = datetime.datetime.utcfromtimestamp(fer.extract_timestamp(token))
 
         data = fer.decrypt(token)[16:]

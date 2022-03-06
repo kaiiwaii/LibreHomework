@@ -24,7 +24,6 @@ fn setScreenLock(val: bool) {
 }
 
 
-
 fn main() {
 
   let mut appdir = tauri::api::path::document_dir().unwrap();
@@ -49,6 +48,8 @@ fn main() {
       addTask,
       removeTask,
       getTasks,
+      getSubjects,
+      addSubject,
       write_config_file,
       read_config_file,
     ])
