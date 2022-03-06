@@ -11,7 +11,13 @@
         "no_activities_left": "¡Yey! No tienes actividades pendientes",
         "no_activities_detail": "¿Debes hacer algo mas tarde?, agrégalo aquí.",
         "add": "Agregar",
-        "write_essay": "Escribir un ensayo"
+        "close": "Cerrar",
+        "task_name": "Nombre de la tarea",
+        "task_description": "Descripción de la tarea",
+        "write_essay": "Escribir un ensayo",
+        "essay_about_edu": "Escribe un ensayo sobre el sistema educativo",
+        "due_date": "Fecha de entrega",
+        "add_task": "Agregar una tarea"
     },
     "en": {
         "summary": "Tools for study efficiency.",
@@ -25,20 +31,32 @@
         "no_activities_left": "Yay! You have no tasks left",
         "no_activities_detail": "Got to do something later?, note it here.",
         "add": "Add",
-        "write_essay": "Write an essay"
+        "close": "Close",
+        "task_name": "Task name",
+        "task_description": "Task description",
+        "write_essay": "Write an essay",
+        "essay_about_edu": "Write an essay about the educative system",
+        "due_date": "Due date",
+        "add_task": "Add task"
     },
     "eo": {
         "summary": "Iloj por studi pli facile.",
         "lock_screen": "Ŝlosi ekranon",
         "unlock_screen": "Malŝlosi ekranon",
-        "timed_lock": "Bloqueo cronometrado",
+        "timed_lock": "Tempata ekranŝlosado",
         "homework": "Taskoj",
         "schedule": "Horaro",
         "organization": "Organizado",
         "settings": "Agordoj",
-        "no_activities_left": "¡Jej! Vi ne havas mankantajn taskojn",
+        "no_activities_left": "Jes! Vi ne havas taskojn por fari",
         "no_activities_detail": "Ĉu vi devas fari ion poste? Skribu ĝin tie ĉi.",
         "add": "Aldoni",
-        "write_essay": "Skribi eseon"
+        "close": "Fermi",
+        "task_name": "Taska nomo",
+        "task_description": "Taska priskribo",
+        "write_essay": "Skribi eseon",
+        "essay_about_edu": "Skribu eseon pri eduksistemo",
+        "due_date": "Liverdato",
+        "add_task": "Aldoni taskon"
     }
 }

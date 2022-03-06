@@ -16,12 +16,21 @@ let v = app.getVersion();
 //let lock = new ScreenLock().Block()
 
 //invoke("get_local_lang").then((v) => console.log(v));
-invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
+
+//invoke("notify", {title: "LibreHomework", message: "LibreHomework is running"}).then(() => console.log("notify"));
 
 let conf = new ConfigManager();
-conf.initDefaultConfig()//.then(()=>{}).catch(err => console.log(err));
+conf.readConfig().then((v) => {
+	if (v == null) {
+		conf.initDefaultConfig();		
+	}
+});
 
-console.log(conf.readConfig();
-conf.readConfig().then((v) => console.log(v));
+//conf.initDefaultConfig()//.then(()=>{}).catch(err => console.log(err));
+//conf.readConfig().then((v) => console.log(v));
+/*
+invoke("getTasks", {limit: 10, page: 0}).then(t => {
+	console.log(t)
+});*/
 
 export default svapp;

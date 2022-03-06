@@ -34,7 +34,7 @@ export class ScreenLock {
 
     Block() {
       let winmanager = getCurrent();
-      console.log(winmanager);
+      //console.log(winmanager);
       if(this.locked) {
             winmanager.setFullscreen(false);
             winmanager.setAlwaysOnTop(false);    

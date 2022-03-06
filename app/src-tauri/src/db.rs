@@ -12,7 +12,7 @@ impl DBManager {
     pub fn prepare_connection(path: &std::path::Path) -> DBManager {
       let conn = Connection::open(path).unwrap_or_else(|_| stop_app("Error connecting to the database"));
 
-      conn.execute("CREATE TABLE IF NOT EXISTS Subjects (name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
+      conn.execute("CREATE TABLE 1IF NOT EXISTS Subjects (name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
 
       conn.execute("CREATE TABLE IF NOT EXISTS Tasks (name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME NOT NULL, 
       FOREIGN KEY(subject) REFERENCES Subjects(name));", []).unwrap_or_else(|_| stop_app("Error creating table Tasks"));
