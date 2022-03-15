@@ -1,4 +1,4 @@
-class Task {
+export class Task {
     async create(name, subject, description, expires_at) {
         return await invoke("addTask", { name: name, subject: subject, description: description, expiresAt: expires_at });
     }
