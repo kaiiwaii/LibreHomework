@@ -2,6 +2,7 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
+#![allow(non_snake_case)]
 
 mod db;
 mod models;
@@ -15,18 +16,18 @@ use utils::*;
 static IS_LOCKED: AtomicBool = AtomicBool::new(false);
 
 #[tauri::command]
-fn getScreenLock() -> bool {
+fn get_screen_lock() -> bool {
   IS_LOCKED.load(Ordering::Relaxed)
 }
 #[tauri::command]
-fn setScreenLock(val: bool) {
+fn set_screen_lock(val: bool) {
   IS_LOCKED.store(val, Ordering::Relaxed);
 }
 
 
 fn main() {
 
-  let mut appdir = tauri::api::path::document_dir().unwrap();
+  let mut appdir = tauri::api::path::config_dir().unwrap();
   appdir.push("LibreHomework");
 
   if !appdir.exists() {
@@ -43,13 +44,13 @@ fn main() {
     .manage(DBManager::prepare_connection(appdir.as_path()))
     .invoke_handler(tauri::generate_handler![
       execute,
-      getScreenLock,
-      setScreenLock,
-      addTask,
-      removeTask,
-      getTasks,
-      getSubjects,
-      addSubject,
+      get_screen_lock,
+      set_screen_lock,
+      add_task,
+      remove_task,
+      get_tasks,
+      get_subjects,
+      add_subject,
       write_config_file,
       read_config_file,
     ])

@@ -21,7 +21,7 @@ impl DBManager {
 }
 
 #[tauri::command]
-pub fn addTask(db: State<DBManager>, name: &str, subject: &str, description: &str, expires_at: &str) -> Result<(), String> {
+pub fn add_task(db: State<DBManager>, name: &str, subject: &str, description: &str, expires_at: &str) -> Result<(), String> {
 
   let expiration_date_parsed = match expires_at.parse::<i64>() {
     Ok(date) => date,
@@ -37,7 +37,7 @@ pub fn addTask(db: State<DBManager>, name: &str, subject: &str, description: &st
 }
 
 #[tauri::command]
-pub fn removeTask(db: State<DBManager>, name: &str) -> Result<(), String> {
+pub fn remove_task(db: State<DBManager>, name: &str) -> Result<(), String> {
 
   db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
   .execute("DELETE FROM Tasks WHERE name = ?1", params![name]).unwrap_or_else(|_| stop_app("Error removing task")); //maybe too agressive?
@@ -46,7 +46,7 @@ pub fn removeTask(db: State<DBManager>, name: &str) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn getTasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task>, String> {
+pub fn get_tasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task>, String> {
 
   let mut vec: Vec<Task> = Vec::new();
 
@@ -61,7 +61,7 @@ pub fn getTasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task>
 }
 
 #[tauri::command]
-pub fn getSubjects(db: State<DBManager>) -> Option<Vec<String>> {
+pub fn get_subjects(db: State<DBManager>) -> Option<Vec<String>> {
   let conn = db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"));
   let mut query = conn.prepare("SELECT name FROM Subjects").unwrap_or_else(|_| stop_app("Error preparing query"));//maybe too agressive?
   let mut rows = query.query([]).unwrap_or_else(|_| stop_app("Error querying"));
@@ -73,7 +73,7 @@ pub fn getSubjects(db: State<DBManager>) -> Option<Vec<String>> {
 }
 
 #[tauri::command]
-pub fn addSubject(db: State<DBManager>, name: &str) -> Option<bool> {
+pub fn add_subject(db: State<DBManager>, name: &str) -> Option<bool> {
 
   db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
   .execute("INSERT INTO Subjects (name) VALUES (?1)", params![name]).ok()?;
