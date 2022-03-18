@@ -27,7 +27,7 @@ class RateLimiter:
                 	cell[0] = calls
                     
                 if cell[0] == 0:
-                    return json({"ratelimit": True})
+                    return json({"success": False, "ratelimit": True})
 
                 self.storage[request.ip][0] -= 1
                 self.storage[request.ip][1] = current_time
@@ -45,9 +45,10 @@ class EndpointLimiter:
             @wraps(func)
             async def wrapper(request, *args, **kwargs):
                 try:
-                    return await self.funcs[func.__name__](calls, per_second)(func)(request, *args, **kwargs)
+                    return await self.funcs[func.__name__].limit(calls, per_second)(func)(request, *args, **kwargs)
                 except KeyError:
-                    self.funcs[func.__name__] = RateLimiter()
-                    return await func(request, *args, **kwargs)
+                    rate_limiter = RateLimiter()
+                    self.funcs[func.__name__] = rate_limiter
+                    return await self.funcs[func.__name__].limit(calls, per_second)(func)(request, *args, **kwargs)
             return wrapper
         return decorator

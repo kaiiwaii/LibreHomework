@@ -114,11 +114,12 @@ async def edit_user(db, token, email=None, discord=None, twitter=None, bio=None)
         return False
 
     query = query[:-2]
-    query += f" WHERE username = {argc + 1};"
+    query += f" WHERE username = ${argc + 1};"
     args.append(username)
 
     async with db.acquire() as pool:
-        q = await pool.execute(query, args)
+        print(query)
+        q = await pool.execute(query, *args)
         if q == "UPDATE 0":
             return False
         else:
