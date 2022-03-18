@@ -37,21 +37,7 @@ class RateLimiter:
 
 class EndpointLimiter:
     def __init__(self):
-        self.users_limiter = RateLimiter()
-        self.login_limiter = RateLimiter()
-        self.signup_limiter = RateLimiter()
-        self.remove_limiter = RateLimiter()
-        self.find_limiter = RateLimiter()
-        self.edit_limiter = RateLimiter()
-        self.daily_message_limiter = RateLimiter()
-
-        self.funcs = {"users": self.users_limiter,
-                      "login": self.login_limiter,
-                      "signup": self.signup_limiter,
-                      "remove_user": self.remove_limiter,
-                      "find_users": self.find_limiter,
-                      "edit_user": self.edit_limiter,
-                      "dailymessage": self.daily_message_limiter}
+        self.funcs = {}
 
 
     def limit(self, calls, per_second):
@@ -61,6 +47,7 @@ class EndpointLimiter:
                 try:
                     return await self.funcs[func.__name__](calls, per_second)(func)(request, *args, **kwargs)
                 except KeyError:
+                    self.funcs[func.__name__] = RateLimiter()
                     return await func(request, *args, **kwargs)
             return wrapper
         return decorator
