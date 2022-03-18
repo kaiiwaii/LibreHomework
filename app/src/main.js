@@ -33,4 +33,11 @@ invoke("getTasks", {limit: 10, page: 0}).then(t => {
 	console.log(t)
 });*/
 
+Number.prototype.pad = function(pad) {
+	let p = Math.pow(10, pad || 2);
+	let a = Math.abs(this);
+	let g = (this<0);
+	return (a < p) ?  ((g ? '-' : '') + (p+a).toString().substring(1)) : this;
+}
+
 export default svapp;

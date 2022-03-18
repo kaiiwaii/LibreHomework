@@ -11,4 +11,5 @@ export class ConfigManager {
     async readConfig() {
         return await invoke("read_config_file");
     }
+
 }
