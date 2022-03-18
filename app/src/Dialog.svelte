@@ -15,7 +15,6 @@
 	}
 
 	let create_subject_name;
-	let added_subjs = [];
 
 	async function setup() {
 		let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
@@ -120,27 +119,7 @@
 		{:else}
 		<div class="empty bg-dark pt-2" style="height: 100%;">
 			<p class="empty-title h5">{dict.no_subjects}</p>
-			<div class="form-group mt-2 {create_subject_name ? 'has-success' : 'has-error'}">
-  				<label class="form-label" for="create-subj">{dict.create_subject}</label>
-  				<div class="input-group">
-  					<input bind:value={create_subject_name} style="border: #5755d9 3px solid!important; border-right: transparent;" class="form-input" type="text" id="create-subj" placeholder="{dict.math}">
-  					{#if create_subject_name}
-					<button class="btn btn-primary input-group-btn" on:click={()=>{
-						subj.create(create_subject_name);
-						added_subjs.push(create_subject_name);
-						create_subject_name = "";
-					}}>{dict.add}</button>
-					{:else}
-					<button class="btn btn-primary input-group-btn" disabled>{dict.add}</button>
-					{/if}
-				</div>
-				<p class="form-input-hint">{!create_subject_name ? dict.field_empty : ''}</p>
-			</div>
-			<ul>
-				{#each added_subjs as subj}
-				<li>{subj}</li>
-				{/each}
-			</ul>
+			<p>{dict.add_subjects_at_settings}</p>
 		</div>
 		{/if}
 

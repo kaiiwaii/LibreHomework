@@ -33,7 +33,8 @@
         "description": "Descripción",
         "empty": "Vacía",
         "delete": "Eliminar",
-        "save": "Guardar"
+        "save": "Guardar",
+        "add_subjects_at_settings": "Puedes agregar materias en las configuraciones de LibreHomework."
     },
     "en": {
         "language": "Language",
@@ -69,7 +70,8 @@
         "description": "Description",
         "empty": "Empty",
         "delete": "Delete",
-        "save": "Save"
+        "save": "Save",
+		"add_subjects_at_settings": "You can add subjects at LibreHomework's settings."
     },
     "eo": {
         "language": "Lingvo",
@@ -105,6 +107,7 @@
         "description": "Priskribo",
         "empty": "Nula",
         "delete": "Forigi",
-        "save": "Konservi"
+        "save": "Konservi",
+		"add_subjects_at_settings": "Vi povas aldoni temojn ĉe la agordoj de LibreHomework."
     }
 }
