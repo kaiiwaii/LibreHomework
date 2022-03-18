@@ -1,10 +1,10 @@
-import aiosqlite
 import utils
 import authtoken
+from time import mktime
 
 async def setup_tables(db):
-        async with db.cursor() as c:
-            await c.execute("""
+        async with db.acquire() as pool:
+            await pool.execute("""
         CREATE TABLE IF NOT EXISTS users (
             username VARCHAR(32) PRIMARY KEY,
             password VARCHAR(64) NOT NULL,
@@ -14,14 +14,20 @@ async def setup_tables(db):
             twitter VARCHAR(16),
             bio VARCHAR(50));
             """) #note that email is public
+            #create daily_message table
+            await pool.execute("""
+            CREATE TABLE IF NOT EXISTS daily_messages (
+                id SERIAL PRIMARY KEY,
+                message TEXT,
+                date TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+            """)
             
 
 async def list_users(db, page):
 
     temp = []
-    async with db.cursor() as c:
-        await c.execute("SELECT username, email FROM users LIMIT 20 OFFSET ?", (page * 20,))
-        for row in await c.fetchall():
+    async with db.acquire() as pool:
+        for row in await pool.fetch("SELECT username, email FROM users LIMIT 20 OFFSET $1", (page * 20)):
             temp.append({row[0]: utils.get_gravatar(row[1])})
         
     return temp
@@ -29,92 +35,91 @@ async def list_users(db, page):
     
 async def add_user(db, username, password, email, discord, twitter, bio):
     password = utils.hash(password.encode("utf8"))
-    async with db.cursor() as c:
+    async with db.acquire() as pool:
         try:
-            q = await c.execute("""
+            q = await pool.execute("""
             INSERT INTO users (username, password, email, discord, twitter, bio)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """, (username, password, email, discord, twitter, bio,))
-            await db.commit()
+            VALUES ($1, $2, $3, $4, $5, $6)
+            """, username, password, email, discord, twitter, bio)
 
-            if q.rowcount == 0:
-                return False
-            else:
-                return True
-        except Exception as e:
+            return True
+        except Exception as e: #UniqueViolationError
             print(e)
             return False
 
 
 async def remove_user(db, token):
     res, username = authtoken.validate_token(token)
-    if res:
-        async with db.cursor() as c:
-            q = await c.execute("DELETE FROM users WHERE username = ?", (username,))
-            await db.commit()
-            if q.rowcount == 0:
-                return False
-            else:
-                return True
-    else:
-        return False
+    if not res: return False
+
+    async with db.acquire() as pool:
+        q = await pool.execute("DELETE FROM users WHERE username = $1", username)
+        if q == "DELETE 0":
+            return False
+        else:
+            return True
 
 
 async def login(db, username, password):
-    async with db.cursor() as c:
-        await c.execute("""
-        SELECT username FROM users where password = ?
-        """, (utils.hash(password.encode("utf8")),))
+    async with db.acquire() as pool:
+        db_username = await pool.fetchrow("""
+        SELECT username FROM users where password = $1 and username = $2
+        """, utils.hash(password.encode("utf8")), username)
 
-        db_username = await c.fetchone()
-        if db_username[0] == username:
+        if db_username["username"] == username:
             return True, authtoken.generate_token(username, 15) #15 minutes
         else:
-            return False
+            return False, None
 
 
 
 async def find_user(db, username):
     temp = []
-    async with db.cursor() as c:
-        await c.execute("""
-    SELECT username, email, created_at, discord, twitter, bio FROM users WHERE username LIKE ? LIMIT 10
-    """, (username,))
-        for row in await c.fetchall():
-            temp.append({"username": row[0], "email": row[1], "creation_date": row[2],"discord": row[3], "twitter": row[4], "bio": row[5], "profile_picture": utils.get_gravatar(row[1])})
-    
+    async with db.acquire() as pool:
+        q = await pool.fetch("""
+    SELECT username, email, created_at, discord, twitter, bio FROM users WHERE username LIKE $1 LIMIT 10
+    """, username)
+        for row in q:
+            temp.append({"username": row[0], "email": row[1], "creation_date": mktime(row[2].timetuple()),"discord": row[3], 
+            "twitter": row[4], "bio": row[5], "profile_picture": utils.get_gravatar(row[1])})
     return temp
 
 
-async def edit_user(db, token, email, discord, twitter, bio):
+async def edit_user(db, token, email=None, discord=None, twitter=None, bio=None):
     res, username = authtoken.validate_token(token)
-    if res:
-        query = "UPDATE users SET "
-        args = []
+    if not res: return False
 
-        if email:
-            query += "email = ?, "
-            args.append(email)
-        if discord:
-            query += "discord = ?, "
-            args.append(discord)
-        if twitter:
-            query += "twitter = ?, "
-            args.append(twitter)
-        if bio:
-            query += "bio = ?, "
-            args.append(bio)
+    query = "UPDATE users SET "
+    args = []
+    argc = 0
 
-        query = query[:-2]
-        query += " WHERE username = ?"
-        args.append(username)
+    if email:
+        argc += 1
+        query += f"email = ${argc}, "
+        args.append(email)
+    if discord:
+        argc += 1
+        query += f"discord = ${argc}, "
+        args.append(discord)
+    if twitter:
+        argc += 1
+        query += f"twitter = {argc}, "
+        args.append(twitter)
+    if bio:
+        argc += 1
+        query += f"bio = ${argc}, "
+        args.append(bio)
 
-        async with db.cursor() as c:
-            q = await c.execute(query, args)
-            await db.commit() 
-            if q.rowcount == 0:
-                return False
-            else:
-                return True
-    else:
+    if argc == 0:
         return False
+
+    query = query[:-2]
+    query += f" WHERE username = {argc + 1};"
+    args.append(username)
+
+    async with db.acquire() as pool:
+        q = await pool.execute(query, args)
+        if q == "UPDATE 0":
+            return False
+        else:
+            return True

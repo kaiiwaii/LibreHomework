@@ -1,13 +1,14 @@
 from sanic import Sanic
 from sanic.exceptions import NotFound, InvalidUsage, MethodNotSupported
 from sanic.response import json, redirect
-import aiosqlite
 import traceback
-
-from utils import update_daily_message
+import os, asyncpg
+from utils import get_daily_message
 from ratelimiter import EndpointLimiter
 import db as database
 import checker
+
+ENV = os.environ
 
 app = Sanic("LibreHomework-Server")
 app.config.FALLBACK_ERROR_FORMAT = "json"
@@ -15,9 +16,10 @@ limiter = EndpointLimiter()
 
 @app.listener("before_server_start")
 async def setup_db(app, loop):
-    temp_db = await aiosqlite.connect("librehomework.db")
-    await database.setup_tables(temp_db)
-    app.ctx.db = temp_db
+    pool = await asyncpg.create_pool(user=ENV["DB_USER"], password=ENV["DB_PASSWORD"],
+     host=ENV["DB_HOST"], port=ENV["DB_PORT"], database=ENV["DB_NAME"], loop=loop)
+    await database.setup_tables(pool)
+    app.ctx.db = pool
     app.ctx.dailymessage = "Nothing yet!"
 
 @app.get("/")
@@ -112,5 +114,6 @@ async def edit_profile(req, token):
         return json({"status": 200})
 
 
-app.add_task(update_daily_message(app))
-app.run(host="0.0.0.0", port=8000, debug=False, workers=4)
+app.add_task(get_daily_message(app))
+app.run(host="0.0.0.0", port=int(os.environ["PORT"]), debug=False)
+#int(os.environ["PORT"])

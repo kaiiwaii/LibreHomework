@@ -88,7 +88,7 @@
 						<label class="form-label" for="subject">{dict.subject}</label>
 						<select class="form-select" id="subject" bind:value={taskData.subject}>
 							{#each subs as sub}
-							<option>{sub}</option>
+							<option>{sub.name}</option>
 							{/each}
 						</select>
 					</div>

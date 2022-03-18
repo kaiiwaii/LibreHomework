@@ -12,7 +12,7 @@ impl DBManager {
     pub fn prepare_connection(path: &std::path::Path) -> DBManager {
       let conn = Connection::open(path).unwrap_or_else(|_| stop_app("Error connecting to the database"));
 
-      conn.execute("CREATE TABLE IF NOT EXISTS Subjects (id SERIAL PRIMARY KEY, name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
+      conn.execute("CREATE TABLE IF NOT EXISTS Subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
 
       conn.execute("CREATE TABLE IF NOT EXISTS Tasks (name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME NOT NULL, 
       FOREIGN KEY(subject) REFERENCES Subjects(name));", []).unwrap_or_else(|_| stop_app("Error creating table Tasks"));
@@ -64,12 +64,12 @@ pub fn get_tasks(db: State<DBManager>, limit: u32, page: u32) -> Result<Vec<Task
 pub fn get_subjects(db: State<DBManager>) -> Option<Vec<Subject>> {
   let conn = db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"));
 
-  let mut query = conn.prepare("SELECT name FROM Subjects").unwrap_or_else(|_| stop_app("Error preparing query"));//maybe too agressive?
+  let mut query = conn.prepare("SELECT id, name FROM Subjects").unwrap_or_else(|_| stop_app("Error preparing query"));//maybe too agressive?
   let mut rows = query.query([]).unwrap_or_else(|_| stop_app("Error querying"));
   let mut vec: Vec<Subject> = Vec::new();
   
   while let Some(row) = rows.next().unwrap_or_else(|_| stop_app("Error iterating over subjects")) {
-    vec.push(Subject::from_row(row).unwrap_or_else(|_| stop_app("Error parsing row")));
+    vec.push(Subject::from_row(row).unwrap_or_else(|_| stop_app("Error parsing subject row")));
   }
   Some(vec)
 }
