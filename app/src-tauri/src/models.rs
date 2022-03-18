@@ -18,3 +18,17 @@ impl Task {
         })
     }
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Subject {
+    id: i32,
+    name: String,
+}
+impl Subject {
+    pub fn from_row(value: &rusqlite::Row<'_>) -> Result<Self, Box<dyn Error>> {
+        Ok(Subject {
+            id: value.get(0)?,
+            name: value.get(1)?,
+        })
+    }
+}
