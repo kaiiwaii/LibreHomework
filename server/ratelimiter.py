@@ -7,33 +7,30 @@ class RateLimiter:
         self.storage = {}
 
     
-    def limit(self, calls, per_second):
-        def decorator(func):
-            @wraps(func)
-            async def wrapper(request, *args, **kwargs):
-                current_time = time.time()
-                cell = self.storage.get(request.ip)
+    async def limit(self, calls, per_second, func, request, *args, **kwargs):
 
-                if not cell:
-                    cell = [calls-1, current_time]
-                    self.storage[request.ip] = cell
-                    return await func(request,*args,**kwargs)
+        current_time = time.time()
+        cell = self.storage.get(request.ip)
 
-                time_delta = current_time - cell[-1]
-                to_add = int(time_delta*(calls/per_second)) # calls/per_second should be hardcoded
-                cell[0] += to_add
+        if not cell:
+            cell = [calls-1, current_time]
+            self.storage[request.ip] = cell
+            return await func(request,*args,**kwargs)
 
-                if cell[0] > calls:
+        time_delta = current_time - cell[-1]
+        to_add = int(time_delta*(calls/per_second))
+        cell[0] += to_add
+
+        if cell[0] > calls:
                 	cell[0] = calls
                     
-                if cell[0] == 0:
-                    return json({"success": False, "ratelimit": True})
+        if cell[0] == 0:
+            return json({"success": False, "ratelimit": True})
 
-                self.storage[request.ip][0] -= 1
-                self.storage[request.ip][1] = current_time
-                return await func(request, *args, **kwargs)
-            return wrapper
-        return decorator
+        self.storage[request.ip][0] -= 1
+        self.storage[request.ip][1] = current_time
+        return await func(request, *args, **kwargs)
+
 
 class EndpointLimiter:
     def __init__(self):
@@ -45,10 +42,10 @@ class EndpointLimiter:
             @wraps(func)
             async def wrapper(request, *args, **kwargs):
                 try:
-                    return await self.funcs[func.__name__].limit(calls, per_second)(func)(request, *args, **kwargs)
+                    return await self.funcs[func.__name__].limit(calls, per_second, func, request, *args, **kwargs)
                 except KeyError:
                     rate_limiter = RateLimiter()
                     self.funcs[func.__name__] = rate_limiter
-                    return await self.funcs[func.__name__].limit(calls, per_second)(func)(request, *args, **kwargs)
+                    return await self.funcs[func.__name__].limit(calls, per_second, func, request, *args, **kwargs)
             return wrapper
         return decorator
