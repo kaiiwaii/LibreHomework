@@ -47,7 +47,8 @@ class EndpointLimiter:
                 try:
                     return await self.funcs[func.__name__](calls, per_second)(func)(request, *args, **kwargs)
                 except KeyError:
-                    self.funcs[func.__name__] = RateLimiter()
-                    return await func(request, *args, **kwargs)
+                    rate_limiter = RateLimiter()
+                    self.funcs[func.__name__] = rate_limiter
+                    return await self.funcs[func.__name__](calls, per_second)(func)(request, *args, **kwargs)
             return wrapper
         return decorator
