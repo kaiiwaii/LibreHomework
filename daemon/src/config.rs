@@ -1,11 +1,11 @@
 use serde_json;
-use serde::Deserialize;
-use dirs_next::document_dir;
+use serde::{Deserialize, Serialize};
+use dirs_next::config_dir;
 use std::collections::HashMap;
 
 
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(default = "default_daemon_config")]
 pub struct DaemonConfig {
     pub start_notification: Option<bool>,
@@ -18,15 +18,32 @@ pub struct DaemonConfig {
 
 impl DaemonConfig {
     pub fn read_config() -> Option<DaemonConfig> {
-        let path = document_dir()?.join("LibreHomework/config.json");
+        let path = config_dir()?.join("LibreHomework/daemonconfig.json");
+        println!("{:?}", path.exists());
+        if !path.exists() {
+            println!("Daemon config file not found, creating default config");
+            DaemonConfig::write_config(default_daemon_config());
+        }
         let config_file = std::fs::read_to_string(path).ok()?;
-
+        println!("here");
         serde_json::from_str::<HashMap<&str, DaemonConfig>>(&config_file).ok()?.get("daemon").cloned()
+    }
+
+    pub fn write_config(config: DaemonConfig) -> Option<bool> {
+        let path = config_dir()?.join("LibreHomework/daemonconfig.json");
+
+        let mut config_map= HashMap::new();
+        config_map.insert("daemon", config);
+
+        let config_json = serde_json::to_string(&config_map).ok()?;
+        std::fs::write(path, config_json).ok()?;
+
+        Some(true)
     }
 }
 
 fn default_daemon_config() -> DaemonConfig {
-    let path: String = document_dir().unwrap().join("LibreHomework/librehomeworkd.log").to_str().unwrap().to_string();
+    let path: String = config_dir().unwrap().join("LibreHomework/librehomeworkd.log").to_str().unwrap().to_string();
     DaemonConfig {
         start_notification: Some(true),
         notify_on_error: Some(true),

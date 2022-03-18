@@ -1,5 +1,5 @@
 use rusqlite::{Connection, Result};
-use dirs_next::document_dir;
+use dirs_next::config_dir;
 
 #[derive(Debug)]
 pub struct Task {
@@ -13,7 +13,7 @@ pub struct Database {
 }
 impl Database {
     pub fn new() -> Option<Self> {
-        let path = document_dir().unwrap().join("LibreHomework/LibreHomework.db");
+        let path = config_dir().unwrap().join("LibreHomework/LibreHomework.db");
         if !path.exists() {
             return None;
         } else {
