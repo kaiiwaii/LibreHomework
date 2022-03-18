@@ -1,7 +1,7 @@
 use std::io::{Write, Read};
 use std::fs::{OpenOptions, File, create_dir, remove_file};
 use std::path::Path;
-use tauri::api::path::document_dir;
+use tauri::api::path::config_dir;
 
 pub fn stop_app(msg: &str) -> ! {
     println!("{}", msg);
@@ -10,7 +10,7 @@ pub fn stop_app(msg: &str) -> ! {
 
 #[tauri::command]
 pub fn read_config_file() -> Option<String> {
-    let mut file = File::open(document_dir()?.join("LibreHomework/config.json")).ok()?;
+    let mut file = File::open(config_dir()?.join("LibreHomework/config.json")).ok()?;
     let mut contents = String::new();
     file.read_to_string(&mut contents).ok()?;
     Some(contents)
@@ -18,7 +18,7 @@ pub fn read_config_file() -> Option<String> {
 
 #[tauri::command]
 pub fn write_config_file(contents: &str) -> Option<bool> {
-    let path = document_dir()?.join("LibreHomework");
+    let path = config_dir()?.join("LibreHomework");
 
     if !Path::new(&path).exists() {
       create_dir(&path).ok()?;
