@@ -1,21 +1,58 @@
 <script lang="js">
 import { invoke } from '@tauri-apps/api';
-import { ScreenLock } from "./screenlock.js";
+import { fade, fly, slide, scale } from 'svelte/transition';
 import locales from "./locales.json";
 
-export let screenlock = new ScreenLock();
-async function setupLocale() {
-	let lang = await invoke("get_local_lang") || navigator.language;
-	lang = lang.substr(0,2); // Only use the language code, like "es" or "en".
-	if (!locales[lang]) {
-		return locales.en; // If language is not in the json, use e̶s̶p̶e̶r̶a̶n̶t̶o̶ english.
-	};
-	return locales[lang]; // Else, use system locale.
+import { ScreenLock } from "./screenlock.js";
+import { ConfigManager } from './configmanager.js';
+import { Task } from './taskmanager.js';
+import { Subject } from './subjects.js';
+
+import Dialog from "./Dialog.svelte";
+
+let creatingTask = false;
+let tab = 0;
+
+const screenlock = new ScreenLock();
+const conf = new ConfigManager();
+const taskmgr = new Task();
+const subj = new Subject();
+
+$: screenlocked = false;
+
+let create_subject_name;
+
+//window.locales = locales;
+
+let currentLang;
+
+let settings = {};
+
+async function setup() {
+	let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
+	currentLang = lang;
+	return locales[lang];
 }
+
+async function getLangs() {
+	let langs = [];
+	langs.push( JSON.parse(await conf.readConfig()).misc.lang );
+	langs.concat(Object.keys(locales))
+	return langs;
+}
+
+window.getlangs = getLangs;
+
+function saveSettings() {
+	// TO-DO: Save settings
+	// I need a method to save settings
+	window.location.reload();
+}
+
 </script>
 
 <main>
-	{#await setupLocale()}
+	{#await setup()}
 	<div class="hero bg-primary text-center">
 		<div class="hero-body">
 			<div class="loading loading-lg"></div>
@@ -24,9 +61,13 @@ async function setupLocale() {
 	{:then dict}
 	<div class="hero bg-primary text-center">
 		<div class="hero-body">
-			<h1>LibreHomework</h1>
+			<h1 is:fade>LibreHomework</h1>
 			<p>{dict.summary}</p>
-			<button class="btn" on:click={screenlock.Block}>{dict.lock_screen}</button>
+			<button class="btn" on:click={() => {
+				screenlock.Block();
+				screenlocked = screenlock.locked;
+			}}>{screenlocked ? dict.unlock_screen : dict.lock_screen}</button>
+			<!--
 			<div class="container">
 				<div class="columns">
 					<div class="col-3"></div>
@@ -39,38 +80,142 @@ async function setupLocale() {
 					</div>
 				</div>
 			</div>
+			-->
 		</div>
 	</div>
-	<svg id="visual" viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 90L11.5 90.7C23 91.3 46 92.7 69 92.3C92 92 115 90 138.2 88.2C161.3 86.3 184.7 84.7 207.8 88.7C231 92.7 254 102.3 277 105C300 107.7 323 103.3 346 102.2C369 101 392 103 415.2 103.7C438.3 104.3 461.7 103.7 484.8 102.8C508 102 531 101 554 102.8C577 104.7 600 109.3 623 106.3C646 103.3 669 92.7 692.2 89.8C715.3 87 738.7 92 761.8 95.7C785 99.3 808 101.7 831 102.3C854 103 877 102 888.5 101.5L900 101L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#303742"></path><path d="M0 74L11.5 72.8C23 71.7 46 69.3 69 68.7C92 68 115 69 138.2 74.2C161.3 79.3 184.7 88.7 207.8 89.8C231 91 254 84 277 80.5C300 77 323 77 346 75.3C369 73.7 392 70.3 415.2 70.5C438.3 70.7 461.7 74.3 484.8 74.2C508 74 531 70 554 70.2C577 70.3 600 74.7 623 74.5C646 74.3 669 69.7 692.2 67.7C715.3 65.7 738.7 66.3 761.8 67.5C785 68.7 808 70.3 831 74.8C854 79.3 877 86.7 888.5 90.3L900 94L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#284676"></path><path d="M0 69L11.5 67.2C23 65.3 46 61.7 69 57.5C92 53.3 115 48.7 138.2 48.2C161.3 47.7 184.7 51.3 207.8 55.7C231 60 254 65 277 64C300 63 323 56 346 55.7C369 55.3 392 61.7 415.2 64.2C438.3 66.7 461.7 65.3 484.8 63C508 60.7 531 57.3 554 54C577 50.7 600 47.3 623 48.5C646 49.7 669 55.3 692.2 59.7C715.3 64 738.7 67 761.8 67.5C785 68 808 66 831 62.2C854 58.3 877 52.7 888.5 49.8L900 47L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#2e51aa"></path><path d="M0 28L11.5 29.2C23 30.3 46 32.7 69 34.7C92 36.7 115 38.3 138.2 37.2C161.3 36 184.7 32 207.8 31.7C231 31.3 254 34.7 277 34.8C300 35 323 32 346 32.7C369 33.3 392 37.7 415.2 39.3C438.3 41 461.7 40 484.8 37.5C508 35 531 31 554 31.3C577 31.7 600 36.3 623 38.8C646 41.3 669 41.7 692.2 41.2C715.3 40.7 738.7 39.3 761.8 37.7C785 36 808 34 831 33.5C854 33 877 34 888.5 34.5L900 35L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#5755d9"></path></svg>
+	<svg id="visual" viewBox="0 0 580 95" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 90L11.5 90.7C23 91.3 46 92.7 69 92.3C92 92 115 90 138.2 88.2C161.3 86.3 184.7 84.7 207.8 88.7C231 92.7 254 102.3 277 105C300 107.7 323 103.3 346 102.2C369 101 392 103 415.2 103.7C438.3 104.3 461.7 103.7 484.8 102.8C508 102 531 101 554 102.8C577 104.7 600 109.3 623 106.3C646 103.3 669 92.7 692.2 89.8C715.3 87 738.7 92 761.8 95.7C785 99.3 808 101.7 831 102.3C854 103 877 102 888.5 101.5L900 101L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#303742"></path><path d="M0 74L11.5 72.8C23 71.7 46 69.3 69 68.7C92 68 115 69 138.2 74.2C161.3 79.3 184.7 88.7 207.8 89.8C231 91 254 84 277 80.5C300 77 323 77 346 75.3C369 73.7 392 70.3 415.2 70.5C438.3 70.7 461.7 74.3 484.8 74.2C508 74 531 70 554 70.2C577 70.3 600 74.7 623 74.5C646 74.3 669 69.7 692.2 67.7C715.3 65.7 738.7 66.3 761.8 67.5C785 68.7 808 70.3 831 74.8C854 79.3 877 86.7 888.5 90.3L900 94L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#284676"></path><path d="M0 69L11.5 67.2C23 65.3 46 61.7 69 57.5C92 53.3 115 48.7 138.2 48.2C161.3 47.7 184.7 51.3 207.8 55.7C231 60 254 65 277 64C300 63 323 56 346 55.7C369 55.3 392 61.7 415.2 64.2C438.3 66.7 461.7 65.3 484.8 63C508 60.7 531 57.3 554 54C577 50.7 600 47.3 623 48.5C646 49.7 669 55.3 692.2 59.7C715.3 64 738.7 67 761.8 67.5C785 68 808 66 831 62.2C854 58.3 877 52.7 888.5 49.8L900 47L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#2e51aa"></path><path d="M0 28L11.5 29.2C23 30.3 46 32.7 69 34.7C92 36.7 115 38.3 138.2 37.2C161.3 36 184.7 32 207.8 31.7C231 31.3 254 34.7 277 34.8C300 35 323 32 346 32.7C369 33.3 392 37.7 415.2 39.3C438.3 41 461.7 40 484.8 37.5C508 35 531 31 554 31.3C577 31.7 600 36.3 623 38.8C646 41.3 669 41.7 692.2 41.2C715.3 40.7 738.7 39.3 761.8 37.7C785 36 808 34 831 33.5C854 33 877 34 888.5 34.5L900 35L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#5755d9"></path></svg>
 	<ul class="tab tab-block">
-	  <li class="tab-item active">
-	    <a href="#homework">{dict.homework}</a>
-	  </li>
-	  <li class="tab-item">
-	    <a href="#schedule">{dict.schedule}</a>
-	  </li>
-	  <li class="tab-item">
-	    <a href="#organization">{dict.organization}</a>
-	  </li>
-	  <li class="tab-item">
-	    <a href="#settings">{dict.settings}</a>
-	  </li>
+		<li class="tab-item { tab == 0 ? 'active' : ''}">
+			<a href="#homework" on:click={() => { tab = 0 }}>{dict.homework}</a>
+		</li>
+		<!--
+		<li class="tab-item">
+			<a href="#schedule">{dict.schedule}</a>
+		</li>
+		<li class="tab-item">
+			<a href="#organization">{dict.organization}</a>
+		</li>
+		-->
+		<li class="tab-item { tab == 1 ? 'active' : ''}">
+			<a href="#settings" on:click={() => { tab = 1 }}>{dict.settings}</a>
+		</li>
 	</ul>
 	
-	<div class="empty bg-dark">
-		<div class="empty-icon">
-			<i class="icon icon-2x icon-check"></i>
-		</div>
-		<p class="empty-title h4">{dict.no_activities_left}</p>
-		<p class="empty-subtitle">{dict.no_activities_detail}</p>
-		<div class="empty-action input-group input-inline">
-			<input class="form-input" type="text" placeholder={dict.write_essay}>
-			<button class="btn btn-primary input-group-btn">{dict.add}</button>
-		</div>
+	{#if tab == 0}
+	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
+		{#if creatingTask}
+			<Dialog on:modalClose={() => { creatingTask = false }} taskmgr={taskmgr} conf={conf} subj={subj} />
+		{:else}
+
+			{#await taskmgr.get_batch(10, 0)}
+			<div class="loading loading-lg"></div>
+			{:then tasks}
+				{#if tasks.length > 0}
+				<div class="pt-1 pb-2" style="display: flex; justify-content: center;">
+					<p class="empty-title h4" style="margin-left: 0; margin-right: auto;" in:slide="{{delay: 100}}">{dict.task_list}</p>
+					<button style="margin-right: 1rem;" class="btn btn-primary" on:click={()=>{
+						creatingTask = true;
+					}}>{dict.add_task}</button>
+				</div>
+
+				<table class="table">
+					<thead>
+						<tr>
+      						<th>{dict.name}</th>
+							<th>{dict.description }</th>
+							<th>{dict.subject}</th>
+							<th>{dict.due_date}</th>
+							<th>{dict.delete}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each tasks as task}
+						{#if !task.deleted}
+
+						<tr in:fly="{{ delay: 100, x: -200, duration: 800 }}">
+							<td>{task.name}</td>
+							<td>{task.description || dict.empty}</td>
+							<td>{task.subject}</td>
+							<td>{new Date(task.expires_at)}</td>
+							<td>
+								<button class="btn btn-error btn-action" on:click={() => {
+									taskmgr.remove(task.name);
+									task.deleted = true;
+								}}>
+									<i class="icon icon-delete"></i>
+								</button>
+							</td>
+						</tr>
+
+						{/if}
+						{/each}
+					</tbody>
+				</table>
+				
+				{:else}
+
+				<div class="empty-icon" in:slide>
+					<i class="icon icon-2x icon-check"></i>
+				</div>
+				<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.no_activities_left}</p>
+				<p class="empty-subtitle">{dict.no_activities_detail}</p>
+				<button class="btn btn-primary" on:click={()=>{
+					creatingTask = true;
+				}}>{dict.add_task}</button>
+				{/if}
+			{:catch error}
+				<div class="empty bg-dark">
+					<div class="empty-icon">
+						<i class="icon icon-3x icon-cross"></i>
+					</div>
+					<p class="empty-title h5">{dict.tasks_error}</p>
+				</div>
+			{/await}
+
+		{/if}
 	</div>
-	<svg id="visual-bottom" viewBox="0 0 900 30" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 12L5.3 12.5C10.7 13 21.3 14 32 14.5C42.7 15 53.3 15 64 14.3C74.7 13.7 85.3 12.3 96.2 11.5C107 10.7 118 10.3 128.8 10.8C139.7 11.3 150.3 12.7 161 12.7C171.7 12.7 182.3 11.3 193 10.5C203.7 9.7 214.3 9.3 225 10.3C235.7 11.3 246.3 13.7 257 13.7C267.7 13.7 278.3 11.3 289 10.2C299.7 9 310.3 9 321.2 9C332 9 343 9 353.8 10.3C364.7 11.7 375.3 14.3 386 15.8C396.7 17.3 407.3 17.7 418 16.5C428.7 15.3 439.3 12.7 450 12C460.7 11.3 471.3 12.7 482 12.3C492.7 12 503.3 10 514 10.2C524.7 10.3 535.3 12.7 546.2 13.8C557 15 568 15 578.8 14.2C589.7 13.3 600.3 11.7 611 11.5C621.7 11.3 632.3 12.7 643 14C653.7 15.3 664.3 16.7 675 16C685.7 15.3 696.3 12.7 707 12.3C717.7 12 728.3 14 739 14.2C749.7 14.3 760.3 12.7 771.2 12.2C782 11.7 793 12.3 803.8 13C814.7 13.7 825.3 14.3 836 15.3C846.7 16.3 857.3 17.7 868 17.3C878.7 17 889.3 15 894.7 14L900 13L900 31L894.7 31C889.3 31 878.7 31 868 31C857.3 31 846.7 31 836 31C825.3 31 814.7 31 803.8 31C793 31 782 31 771.2 31C760.3 31 749.7 31 739 31C728.3 31 717.7 31 707 31C696.3 31 685.7 31 675 31C664.3 31 653.7 31 643 31C632.3 31 621.7 31 611 31C600.3 31 589.7 31 578.8 31C568 31 557 31 546.2 31C535.3 31 524.7 31 514 31C503.3 31 492.7 31 482 31C471.3 31 460.7 31 450 31C439.3 31 428.7 31 418 31C407.3 31 396.7 31 386 31C375.3 31 364.7 31 353.8 31C343 31 332 31 321.2 31C310.3 31 299.7 31 289 31C278.3 31 267.7 31 257 31C246.3 31 235.7 31 225 31C214.3 31 203.7 31 193 31C182.3 31 171.7 31 161 31C150.3 31 139.7 31 128.8 31C118 31 107 31 96.2 31C85.3 31 74.7 31 64 31C53.3 31 42.7 31 32 31C21.3 31 10.7 31 5.3 31L0 31Z" fill="#5755d9" stroke-linecap="round" stroke-linejoin="miter"></path></svg>
+	{:else}
+	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
+		<div class="empty-icon" in:slide>
+			<i class="icon icon-2x icon-edit"></i>
+		</div>
+		<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.settings}</p>
+		
+		<form class="pt-2" style="width: 60%; margin-left: auto; margin-right: auto;">
+			<!--<div class="form-group">
+				<label class="form-label" for="language">{dict.language}</label>
+				<select class="form-select" id="language" bind:value={settings.lang}>
+					<option selected>{currentLang}</option>
+					{#each Object.keys(locales) as lang}
+					{#if !(lang == currentLang)}
+					<option>{lang}</option>
+					{/if}
+					{/each}
+				</select>
+			</div>-->
+			<div class="form-group mt-2">
+  				<label class="form-label" for="create-subj">{dict.create_subject}</label>
+  				<div class="input-group">
+  					<input bind:value={create_subject_name} style="border: #5755d9 3px solid!important; border-right: transparent;" class="form-input" type="text" id="create-subj" placeholder="{dict.math}">
+  					{#if create_subject_name}
+					<button class="btn btn-primary input-group-btn" on:click={()=>{
+						subj.create(create_subject_name);
+						create_subject_name = "";
+					}}>{dict.add}</button>
+					{:else}
+					<button class="btn btn-primary input-group-btn" disabled>{dict.add}</button>
+					{/if}
+				</div>
+				<p class="form-input-hint">{!create_subject_name ? dict.field_empty : ''}</p>
+			</div>
+		</form>
+
+		<!--<button class="btn btn-primary mt-2" on:click={saveSettings}>{dict.save}</button>-->
+	</div>
+	{/if}
+	
 	{:catch error}
-		<svg id="visual" viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 90L11.5 90.7C23 91.3 46 92.7 69 92.3C92 92 115 90 138.2 88.2C161.3 86.3 184.7 84.7 207.8 88.7C231 92.7 254 102.3 277 105C300 107.7 323 103.3 346 102.2C369 101 392 103 415.2 103.7C438.3 104.3 461.7 103.7 484.8 102.8C508 102 531 101 554 102.8C577 104.7 600 109.3 623 106.3C646 103.3 669 92.7 692.2 89.8C715.3 87 738.7 92 761.8 95.7C785 99.3 808 101.7 831 102.3C854 103 877 102 888.5 101.5L900 101L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#303742"></path><path d="M0 74L11.5 72.8C23 71.7 46 69.3 69 68.7C92 68 115 69 138.2 74.2C161.3 79.3 184.7 88.7 207.8 89.8C231 91 254 84 277 80.5C300 77 323 77 346 75.3C369 73.7 392 70.3 415.2 70.5C438.3 70.7 461.7 74.3 484.8 74.2C508 74 531 70 554 70.2C577 70.3 600 74.7 623 74.5C646 74.3 669 69.7 692.2 67.7C715.3 65.7 738.7 66.3 761.8 67.5C785 68.7 808 70.3 831 74.8C854 79.3 877 86.7 888.5 90.3L900 94L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#284676"></path><path d="M0 69L11.5 67.2C23 65.3 46 61.7 69 57.5C92 53.3 115 48.7 138.2 48.2C161.3 47.7 184.7 51.3 207.8 55.7C231 60 254 65 277 64C300 63 323 56 346 55.7C369 55.3 392 61.7 415.2 64.2C438.3 66.7 461.7 65.3 484.8 63C508 60.7 531 57.3 554 54C577 50.7 600 47.3 623 48.5C646 49.7 669 55.3 692.2 59.7C715.3 64 738.7 67 761.8 67.5C785 68 808 66 831 62.2C854 58.3 877 52.7 888.5 49.8L900 47L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#2e51aa"></path><path d="M0 28L11.5 29.2C23 30.3 46 32.7 69 34.7C92 36.7 115 38.3 138.2 37.2C161.3 36 184.7 32 207.8 31.7C231 31.3 254 34.7 277 34.8C300 35 323 32 346 32.7C369 33.3 392 37.7 415.2 39.3C438.3 41 461.7 40 484.8 37.5C508 35 531 31 554 31.3C577 31.7 600 36.3 623 38.8C646 41.3 669 41.7 692.2 41.2C715.3 40.7 738.7 39.3 761.8 37.7C785 36 808 34 831 33.5C854 33 877 34 888.5 34.5L900 35L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#5755d9"></path></svg>
+		<svg id="visual" viewBox="0 0 580 95" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 90L11.5 90.7C23 91.3 46 92.7 69 92.3C92 92 115 90 138.2 88.2C161.3 86.3 184.7 84.7 207.8 88.7C231 92.7 254 102.3 277 105C300 107.7 323 103.3 346 102.2C369 101 392 103 415.2 103.7C438.3 104.3 461.7 103.7 484.8 102.8C508 102 531 101 554 102.8C577 104.7 600 109.3 623 106.3C646 103.3 669 92.7 692.2 89.8C715.3 87 738.7 92 761.8 95.7C785 99.3 808 101.7 831 102.3C854 103 877 102 888.5 101.5L900 101L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#303742"></path><path d="M0 74L11.5 72.8C23 71.7 46 69.3 69 68.7C92 68 115 69 138.2 74.2C161.3 79.3 184.7 88.7 207.8 89.8C231 91 254 84 277 80.5C300 77 323 77 346 75.3C369 73.7 392 70.3 415.2 70.5C438.3 70.7 461.7 74.3 484.8 74.2C508 74 531 70 554 70.2C577 70.3 600 74.7 623 74.5C646 74.3 669 69.7 692.2 67.7C715.3 65.7 738.7 66.3 761.8 67.5C785 68.7 808 70.3 831 74.8C854 79.3 877 86.7 888.5 90.3L900 94L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#284676"></path><path d="M0 69L11.5 67.2C23 65.3 46 61.7 69 57.5C92 53.3 115 48.7 138.2 48.2C161.3 47.7 184.7 51.3 207.8 55.7C231 60 254 65 277 64C300 63 323 56 346 55.7C369 55.3 392 61.7 415.2 64.2C438.3 66.7 461.7 65.3 484.8 63C508 60.7 531 57.3 554 54C577 50.7 600 47.3 623 48.5C646 49.7 669 55.3 692.2 59.7C715.3 64 738.7 67 761.8 67.5C785 68 808 66 831 62.2C854 58.3 877 52.7 888.5 49.8L900 47L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#2e51aa"></path><path d="M0 28L11.5 29.2C23 30.3 46 32.7 69 34.7C92 36.7 115 38.3 138.2 37.2C161.3 36 184.7 32 207.8 31.7C231 31.3 254 34.7 277 34.8C300 35 323 32 346 32.7C369 33.3 392 37.7 415.2 39.3C438.3 41 461.7 40 484.8 37.5C508 35 531 31 554 31.3C577 31.7 600 36.3 623 38.8C646 41.3 669 41.7 692.2 41.2C715.3 40.7 738.7 39.3 761.8 37.7C785 36 808 34 831 33.5C854 33 877 34 888.5 34.5L900 35L900 0L888.5 0C877 0 854 0 831 0C808 0 785 0 761.8 0C738.7 0 715.3 0 692.2 0C669 0 646 0 623 0C600 0 577 0 554 0C531 0 508 0 484.8 0C461.7 0 438.3 0 415.2 0C392 0 369 0 346 0C323 0 300 0 277 0C254 0 231 0 207.8 0C184.7 0 161.3 0 138.2 0C115 0 92 0 69 0C46 0 23 0 11.5 0L0 0Z" fill="#5755d9"></path></svg>
 		<div class="empty bg-dark" style="height: 100%;">
 			<div class="empty-icon">
 				<i class="icon icon-3x icon-cross"></i>
@@ -105,10 +250,35 @@ async function setupLocale() {
 	#visual {
 		width: 100%;
 	}
-	
-	#visual-bottom {
-		margin-bottom: 0;
+
+	#visual > * {
+		width: 100%;
 	}
-	
+
+	th {
+		padding-left: 0;
+		font-weight: 500;
+	}
+
+	.form-input, .input-group-addon {
+		color: white!important;
+		background-color: transparent!important;
+		border: transparent!important;
+		border-bottom-style: solid!important;
+		border-bottom-color: #5755d9!important;
+		border-bottom-width: 3px!important;
+	}
+
+	.form-select {
+		color: white!important;
+		background-color: transparent!important;
+		border: transparent!important;
+		border-bottom-style: solid!important;
+		border-bottom-color: #5755d9!important;
+		border-bottom-width: 3px!important;
+	}
+
+	.pt-2 {
+		padding-top: 1rem;
+	}
 </style>
-<button on:click={screenlock.Block}></button>
