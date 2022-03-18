@@ -99,7 +99,7 @@ async def find_users(req, username):
 @app.post("/edit")
 @limiter.limit(15, 1800)
 @checker.args_checker(True)
-async def edit_profile(req, token):
+async def edit_user(req, token):
 
     email = req.form.get("email")
     discord = req.form.get("discord")

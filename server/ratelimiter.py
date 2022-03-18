@@ -45,25 +45,22 @@ class EndpointLimiter:
         self.edit_limiter = RateLimiter()
         self.daily_message_limiter = RateLimiter()
 
+        self.funcs = {"users": self.users_limiter,
+                      "login": self.login_limiter,
+                      "signup": self.signup_limiter,
+                      "remove_user": self.remove_limiter,
+                      "find_users": self.find_limiter,
+                      "edit_user": self.edit_limiter,
+                      "dailymessage": self.daily_message_limiter}
+
+
     def limit(self, calls, per_second):
         def decorator(func):
             @wraps(func)
             async def wrapper(request, *args, **kwargs):
-                if request.path == "/users":
-                    return await self.users_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/login":
-                    return await self.login_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/signup":
-                    return await self.signup_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/remove":
-                    return await self.remove_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/find":
-                    return await self.find_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/edit":
-                    return await self.edit_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                elif request.path == "/dailymessage":
-                    return await self.daily_message_limiter.limit(calls, per_second)(func)(request, *args, **kwargs)
-                else:
+                try:
+                    return await self.funcs[func.__name__](calls, per_second)(func)(request, *args, **kwargs)
+                except KeyError:
                     return await func(request, *args, **kwargs)
             return wrapper
         return decorator
