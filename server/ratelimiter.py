@@ -22,9 +22,9 @@ class RateLimiter:
         cell[0] += to_add
 
         if cell[0] > calls:
-                	cell[0] = calls
+            cell[0] = calls
                     
-        if cell[0] == 0:
+        if cell[0] <= 0:
             return json({"success": False, "ratelimit": True})
 
         self.storage[request.ip][0] -= 1
