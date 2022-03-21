@@ -12,4 +12,9 @@ export class ConfigManager {
         return await invoke("read_config_file");
     }
 
+    async writeConfig(config) {
+        // Actually this is not very safe, it might lead to a little self-XSS vuln, but anyway... 😳
+        return await invoke("write_config_file", {"contents": JSON.stringify(
+            config, null, 4)});
+    }
 }

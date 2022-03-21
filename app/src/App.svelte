@@ -4,7 +4,7 @@ import { fade, fly, slide, scale } from 'svelte/transition';
 import locales from "./locales.json";
 
 import { ScreenLock } from "./screenlock.js";
-import { ConfigManager } from './configmanager.js';
+import { ConfigManager, defaultConfig } from './configmanager.js';
 import { Task } from './taskmanager.js';
 import { Subject } from './subjects.js';
 
@@ -53,8 +53,11 @@ async function getLangs() {
 window.getlangs = getLangs;
 
 function saveSettings() {
-	// TO-DO: Save settings
-	// I need a method to save settings
+	let newSettings = defaultConfig;
+	newSettings.misc.lang = settings.lang;
+	// Add other settings later
+
+	conf.writeConfig(newSettings);
 	window.location.reload();
 }
 
@@ -327,9 +330,9 @@ function saveSettings() {
 		<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.settings}</p>
 		
 		<form class="pt-2" style="width: 60%; margin-left: auto; margin-right: auto;">
-			<!--<div class="form-group">
+			<div class="form-group">
 				<label class="form-label" for="language">{dict.language}</label>
-				<select class="form-select" id="language" bind:value={settings.lang}>
+				<select class="form-select" style="text-align: center;" id="language" bind:value={settings.lang}>
 					<option selected>{currentLang}</option>
 					{#each Object.keys(locales) as lang}
 					{#if !(lang == currentLang)}
@@ -337,10 +340,10 @@ function saveSettings() {
 					{/if}
 					{/each}
 				</select>
-			</div>-->
+			</div>
 		</form>
 
-		<!--<button class="btn btn-primary mt-2" on:click={saveSettings}>{dict.save}</button>-->
+		<button class="btn btn-primary mt-2" on:click={saveSettings}>{dict.save}</button>
 	</div>
 	{/if}
 	
