@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
+    id: u32,
     name: String,
     subject: String,
     description: Option<String>,
@@ -11,10 +12,11 @@ pub struct Task {
 impl Task {
     pub fn from_row(value: &rusqlite::Row<'_>) -> Result<Self, Box<dyn Error>> {
         Ok(Task {
-            name: value.get(0)?,
-            subject: value.get(1)?,
-            description: value.get(2)?,
-            expires_at: value.get(3)?,
+            id: value.get(0)?,
+            name: value.get(1)?,
+            subject: value.get(2)?,
+            description: value.get(3)?,
+            expires_at: value.get(4)?,
         })
     }
 }

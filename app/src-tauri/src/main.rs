@@ -51,6 +51,7 @@ fn main() {
       get_tasks,
       get_subjects,
       add_subject,
+      remove_subject,
       write_config_file,
       read_config_file,
     ])

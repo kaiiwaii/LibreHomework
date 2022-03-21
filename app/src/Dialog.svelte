@@ -14,7 +14,13 @@
 		time: "23:59"
 	}
 
+	let dateError = "";
 	let create_subject_name;
+
+	function getMinDate() {
+		let mindate = new Date(Date.now());
+		return `${mindate.getFullYear()}-${(mindate.getMonth()+1).pad()}-${mindate.getDate().pad()}`
+	}
 
 	async function setup() {
 		let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
@@ -35,7 +41,10 @@
 		tempDate.setHours( taskData.time.match( /(\d{2}):\d{2}/ )[1] );
 		tempDate.setMinutes( taskData.time.match( /\d{2}:(\d{2})/ )[1] );
 
-		console.log(taskData)
+		if (tempDate.getTime() < Date.now()) {
+			dateError = "date_past";
+			return;
+		}
 
 		// name, subject, description, expires_at
 		taskmgr.create(
@@ -93,13 +102,17 @@
 						</select>
 					</div>
 
-					<div class="form-group pb-2 {taskData.time && taskData.date ? 'has-success' : 'has-error'}">
+					<div class="form-group pb-2 {taskData.time && taskData.date && !dateError ? 'has-success' : 'has-error'}">
 						<label class="form-label" for="due_date">{dict.due_date}</label>
 						<div class="input-group">
 							<input bind:value={taskData.time} class="form-input text-right" type="time">
 							<input bind:this={taskData.jsDate} bind:value={taskData.date} class="form-input text-left input-group-addon" type="date">
 						</div>
-						<p class="form-input-hint">{!(taskData.time && taskData.date) ? dict.field_empty : ''}</p>
+						<p class="form-input-hint">
+							{!(taskData.time && taskData.date) ? dict.field_empty : ''}
+							{!(taskData.time && taskData.date) && dateError ? '. ' : ''}
+							{dateError ? dict[dateError] : ''}
+						</p>
 					</div>
 
 				</form>

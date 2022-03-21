@@ -14,7 +14,7 @@ impl DBManager {
 
       conn.execute("CREATE TABLE IF NOT EXISTS Subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)", []).unwrap_or_else(|_| stop_app("Error creating table Subjects"));
 
-      conn.execute("CREATE TABLE IF NOT EXISTS Tasks (name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME NOT NULL, 
+      conn.execute("CREATE TABLE IF NOT EXISTS Tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, subject TEXT NOT NULL, description TEXT, expires_at DATETIME NOT NULL, 
       FOREIGN KEY(subject) REFERENCES Subjects(name));", []).unwrap_or_else(|_| stop_app("Error creating table Tasks"));
       return DBManager(Mutex::new(conn));
     }
@@ -37,10 +37,10 @@ pub fn add_task(db: State<DBManager>, name: &str, subject: &str, description: &s
 }
 
 #[tauri::command]
-pub fn remove_task(db: State<DBManager>, name: &str) -> Result<(), String> {
+pub fn remove_task(db: State<DBManager>, id: u32) -> Result<(), String> {
 
   db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
-  .execute("DELETE FROM Tasks WHERE name = ?1", params![name]).unwrap_or_else(|_| stop_app("Error removing task")); //maybe too agressive?
+  .execute("DELETE FROM Tasks WHERE id = ?1", params![id]).unwrap_or_else(|_| stop_app("Error removing task")); //maybe too agressive?
 
    Ok(())
 }
@@ -79,6 +79,15 @@ pub fn add_subject(db: State<DBManager>, name: &str) -> Option<bool> {
 
   db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
   .execute("INSERT INTO Subjects (name) VALUES (?1)", params![name]).ok()?;
+
+  Some(true)
+}
+
+#[tauri::command]
+pub fn remove_subject(db: State<DBManager>, id: i32) -> Option<bool> {
+
+  db.0.lock().unwrap_or_else(|_| stop_app("Failed to access the database (unlocking mutex)"))
+  .execute("DELETE FROM Subjects WHERE id = ?1", params![id]).ok()?;
 
   Some(true)
 }

@@ -7,7 +7,7 @@ export class Task {
     async get_batch(limit, page) {
         return await invoke("get_tasks", { limit: limit, page: page });
     }
-    async remove(name) {
-        return await invoke("remove_task", { name: name });
+    async remove(id) {
+        return await invoke("remove_task", { id: id });
     }
 }

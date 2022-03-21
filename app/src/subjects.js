@@ -7,8 +7,8 @@ export class Subject {
     async get_batch() {
         return await invoke("get_subjects");
     }
-    async remove(name) {
-        return await invoke("remove_task", { name: name });
+    async remove(id) {
+        return await invoke("remove_subject", { id: id });
     }
 }
 

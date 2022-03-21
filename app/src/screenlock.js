@@ -32,25 +32,25 @@ export class ScreenLock {
     }, 1000);
   } 
 
-    Block() {
-      let winmanager = getCurrent();
-      //console.log(winmanager);
-      if(this.locked) {
-            winmanager.setFullscreen(false);
-            winmanager.setAlwaysOnTop(false);    
-            
-            invoke("set_screen_lock", {val: false});
-            this.locked = false;
-      } else {
-        invoke("set_screen_lock", {val: true});
-        winmanager.setFocus();
-        winmanager.setAlwaysOnTop(true);
-        winmanager.setFullscreen(true);
-        
-        
-        
-        this.locked = true;
-      }
+  Block() {
+    let winmanager = getCurrent();
+    //console.log(winmanager);
+    if(this.locked) {
+          winmanager.setFullscreen(false);
+          winmanager.setAlwaysOnTop(false);    
+          
+          invoke("set_screen_lock", {val: false});
+          this.locked = false;
+    } else {
+      invoke("set_screen_lock", {val: true});
+      winmanager.setFocus();
+      winmanager.setAlwaysOnTop(true);
+      winmanager.setFullscreen(true);
+      
+      
+      
+      this.locked = true;
     }
+  }
     
 }

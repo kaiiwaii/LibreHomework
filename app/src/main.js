@@ -40,4 +40,13 @@ Number.prototype.pad = function(pad) {
 	return (a < p) ?  ((g ? '-' : '') + (p+a).toString().substring(1)) : this;
 }
 
+// I know that this is probably unoptimized as... but anyways... 😳
+String.prototype.capitalize = function() {
+	let newString = "";
+	for (let w of this.split(" ")) {
+		newString += (w[0].toUpperCase() + w.substring(1)) + " ";
+	}
+	return newString;
+}
+
 export default svapp;
