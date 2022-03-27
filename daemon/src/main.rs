@@ -15,17 +15,33 @@ fn main() {
     log_panics::init();
     env_logger::init();
 
-    let config = config::DaemonConfig::read_config().unwrap();
-    let mut db = db::Database::new().unwrap();
+    let config = if let Some(cfg) = config::DaemonConfig::read_config() {
+        cfg
+    } else {
+        notify(LogType::Error, "LibreHomework Daemon: Failed to read config file");
+        panic!("Failed to read config file");
+    };
+
+    let mut db = if let Some(db) = db::Database::new() {
+        db
+    } else {
+        notify(LogType::Error, "LibreHomework Daemon: Failed to open database");
+        panic!("Failed to open database");
+    };
 
     if config.start_notification == Some(true) {
-        notify(LogType::Info, "LibreHomework daemon started");
+        notify(LogType::Info, "LibreHomework Daemon started");
     }
 
     loop {
-        let mut tasks = db.check().unwrap();
+        let mut tasks = if let Ok(data) = db.check() {
+            data
+        } else {
+            notify(LogType::Error, "LibreHomework Daemon: Failed to read database");
+            panic!("Failed to get tasks from database");
+        };
+        
         tasks.sort_by(|t1, t2| t1.expires_at.cmp(&t2.expires_at));
-        println!("{:?}", tasks);
 
         let mut c = 0;
 
@@ -49,8 +65,6 @@ fn main() {
         sleep(Duration::from_secs(config.remind_every.unwrap() as u64 * 60));
     }
 }
-
-//make function that accepts timestamp and returns message choosing betweem minutes or days left
 
 pub fn choose_time(secs: u64) -> String {
     if secs < 60 {
