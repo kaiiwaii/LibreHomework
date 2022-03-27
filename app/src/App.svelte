@@ -33,6 +33,8 @@ let currentLang;
 
 let timed_lock = false;
 let locktime = {};
+let lockButtonIsDisabled = false;
+let timedLockSwitchIsDisabled = false;
 
 
 let settings = {};
@@ -179,7 +181,7 @@ function saveSettings() {
 		<p class="empty-title h3" style="padding-bottom: 1rem; font-weight: 500;">{ (screenlocked ? dict.screen_locked : dict.screen_not_locked).capitalize() }</p>
 
 		<div class="form-group" style="display: flex; justify-content: center; width: fit-content; margin-left: auto; margin-right: auto;">
-			<button class="btn btn-primary" style="margin-right: 1.5rem;" on:click={() => {
+			<button disabled={lockButtonIsDisabled} class="btn btn-primary" style="margin-right: 1.5rem;" on:click={() => {
 				if (!timed_lock) {
 					screenlock.Block();
 					screenlocked = screenlock.locked;
@@ -199,6 +201,8 @@ function saveSettings() {
 					wait = (wait <= 0 ? 5 : wait);
 
 					screenlock.Start(wait);
+					lockButtonIsDisabled = true;
+					timedLockSwitchIsDisabled = true;	
 					screenlocked = screenlock.locked;
 
 					// Setup countdown timer
@@ -218,6 +222,8 @@ function saveSettings() {
 							cdTimer = {};
 							clearInterval(x);
 							screenlocked = false;
+							lockButtonIsDisabled = false;
+							timedLockSwitchIsDisabled = false;
 						}
 
 					}, 1000);
@@ -226,7 +232,7 @@ function saveSettings() {
 				{screenlocked ? dict.unlock_screen : dict.lock_screen}
 			</button>
 			<label class="form-switch" style="text-align: center; width: fit-content; margin-left: auto; margin-right: auto;">
-				<input type="checkbox" bind:checked={timed_lock}>
+				<input disabled={timedLockSwitchIsDisabled} type="checkbox" bind:checked={timed_lock}>
 					<i class="form-icon"></i> {dict.timed_lock}
 			</label>
 		</div>
