@@ -105,7 +105,7 @@ async def edit_user(req, token):
     discord = req.form.get("discord")
     twitter = req.form.get("twitter")
     bio = req.form.get("bio")
-    print(token)
+
     res = await database.edit_user(app.ctx.db, token.encode("utf8"), email, discord, twitter, bio)
 
     if not res:
