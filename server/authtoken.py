@@ -3,7 +3,10 @@ import datetime
 import os, struct
 import traceback
 
+#from env import ENV
 fer = Fernet(os.environ["TOKEN_KEY"].encode("utf8"))
+#fer = Fernet(ENV["TOKEN_KEY"].encode("utf8"))
+
 
 def generate_token(username,ttl):
   global fer

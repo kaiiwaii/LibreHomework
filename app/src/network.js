@@ -1,8 +1,8 @@
-class Network {
+class ServerAPI {
     constructor() {
         this.url = "https://librehomework-api.herokuapp.com/";
 
-        let res = fetch(this.url + "dailymessage").then((r) => {
+        let res = fetch(this.url + "dailymessage/").then((r) => {
             if (r.status == 200) {
                 return [true, r.json()];
             }
@@ -117,3 +117,5 @@ class Network {
 
 
 }
+
+export default ServerAPI;

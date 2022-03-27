@@ -6,6 +6,7 @@
 
 mod db;
 mod models;
+mod network;
 mod utils;
 use tauri::{Manager, RunEvent};
 use std::sync::atomic::{AtomicBool, Ordering};

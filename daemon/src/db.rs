@@ -30,7 +30,7 @@ impl Database {
         let conn = self.init_connection()?;
         let mut stmt = conn.prepare("SELECT * FROM tasks")?;
         let mut rows = stmt.query([])?;
-
+        println!("what");
         while let Some(row) = rows.next()? {
             let name = row.get(0)?;
             let subject = row.get(1)?;
@@ -43,6 +43,7 @@ impl Database {
                 description,
                 expires_at
             });
+            println!("pushed")
         }
         Ok(tasks)
     }
