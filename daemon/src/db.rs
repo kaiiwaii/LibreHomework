@@ -3,6 +3,7 @@ use dirs_next::config_dir;
 
 #[derive(Debug)]
 pub struct Task {
+    pub id: u32,
     pub name: String,
     pub subject: String,
     pub description: String,
@@ -14,6 +15,7 @@ pub struct Database {
 impl Database {
     pub fn new() -> Option<Self> {
         let path = config_dir().unwrap().join("LibreHomework/LibreHomework.db");
+
         if !path.exists() {
             return None;
         } else {
@@ -30,20 +32,22 @@ impl Database {
         let conn = self.init_connection()?;
         let mut stmt = conn.prepare("SELECT * FROM tasks")?;
         let mut rows = stmt.query([])?;
-        println!("what");
+
         while let Some(row) = rows.next()? {
-            let name = row.get(0)?;
-            let subject = row.get(1)?;
-            let description = row.get(2)?;
-            let expires_at = row.get(3)?;
+
+            let id = row.get(0)?;
+            let name = row.get(1)?;
+            let subject = row.get(2)?;
+            let description = row.get(3)?;
+            let expires_at = row.get(4)?;
 
             tasks.push(Task {
+                id,
                 name,
                 subject,
                 description,
                 expires_at
             });
-            println!("pushed")
         }
         Ok(tasks)
     }
