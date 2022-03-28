@@ -52,7 +52,7 @@ String.prototype.capitalize = function() {
 
 let net = new ServerAPI()
 console.log(net)
-net.getDailyMessage().then((d) => console.log(d))
-net.login("username", "password").then((d) => console.log(d))
+//net.getDailyMessage().then((d) => console.log(d))
+//net.login("username", "password").then((d) => console.log(d))
 
 export default svapp;

@@ -96,7 +96,10 @@ function saveSettings() {
 			<a href="#subjects" on:click={() => { tab = 2 }}>{dict.subjects}</a>
 		</li>
 		<li class="tab-item { tab == 3 ? 'active' : ''}">
-			<a href="#settings" on:click={() => { tab = 3 }}>{dict.settings}</a>
+			<a href="#network" on:click={() => { tab = 3 }}>{dict.network}</a>
+		</li>
+		<li class="tab-item { tab == 4 ? 'active' : ''}">
+			<a href="#settings" on:click={() => { tab = 4 }}>{dict.settings}</a>
 		</li>
 	</ul>
 	
@@ -246,6 +249,7 @@ function saveSettings() {
 			{:else}
 				<div class="form-group" style="width: fit-content; margin-left: auto; margin-right: auto; padding-top:
 				 1rem; ">
+				 	<!-- svelte-ignore a11y-label-has-associated-control -->
 				 	<label>{dict.about_timed_lock}</label>
 					<div class="input-group" style="margin-top: 0.5rem;">
 						<input type="number" bind:value={locktime.hours} class="form-input input-group-addon" min="0" placeholder="{dict.hours}">
@@ -328,7 +332,9 @@ function saveSettings() {
 		{/await}
 		{/key}
 	</div>
-	{:else}
+	{:else if tab == 3}
+	<div>Coming soon...</div>
+	{:else if tab == 4}
 	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
 		<div class="empty-icon" in:slide>
 			<i class="icon icon-2x icon-edit"></i>

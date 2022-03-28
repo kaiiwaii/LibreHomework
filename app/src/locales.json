@@ -43,7 +43,9 @@
         "hours": "Hours",
         "minutes": "Minutes",
         "seconds": "Seconds",
-        "about_timed_lock": "Enter the amount of hours, minutes and/or seconds you want the timed lock to last. All values are optional, and the default timeout is five seconds."
+        "about_timed_lock": "Enter the amount of hours, minutes and/or seconds you want the timed lock to last. All values are optional, and the default timeout is five seconds.",
+        "network": "Network",
+        "network_error": "Network error"
     },
     "es": {
         "language": "Idioma",
@@ -89,7 +91,9 @@
         "hours": "Horas",
         "minutes": "Minutos",
         "seconds": "Segundos",
-        "about_timed_lock": "Introduce la cantidad de horas, minutos y/o segundos que quieres que tarde el bloqueo de pantalla. Todos los valores son opcionales, y la espera por defecto son cinco segundos."
+        "about_timed_lock": "Introduce la cantidad de horas, minutos y/o segundos que quieres que tarde el bloqueo de pantalla. Todos los valores son opcionales, y la espera por defecto son cinco segundos.",
+        "network": "Red",
+        "network_error": "Error de red"
     },
     "eo": {
         "language": "Lingvo",
@@ -135,6 +139,8 @@
         "hours": "Horoj",
         "minutes": "Minutoj",
         "seconds": "Sekundoj",
-        "about_timed_lock": "Enigu la kvanto da horoj, minutoj kaj/aŭ sekundoj, kiuj vi volas, ke la tempata ŝlosado daŭros. Ĉiuj kampoj estas nedevigaj, kaj la defaŭlta tempo estas kvin sekundoj."
+        "about_timed_lock": "Enigu la kvanto da horoj, minutoj kaj/aŭ sekundoj, kiuj vi volas, ke la tempata ŝlosado daŭros. Ĉiuj kampoj estas nedevigaj, kaj la defaŭlta tempo estas kvin sekundoj.",
+        "network": "",
+        "network_error": ""
     }
 }

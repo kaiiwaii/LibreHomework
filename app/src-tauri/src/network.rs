@@ -29,7 +29,6 @@ pub async fn request(url: &str, method: Option<&str>, form: Option<HashMap<Strin
         _url = APIURL.to_owned() + &_url;
     }
 
-    println!("{}", &_url);
     let res = match method {
         Some(m) => if m == "POST" {
                             client.post(_url).form(&form).send().await
