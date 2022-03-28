@@ -30,7 +30,7 @@ async def index(request):
 @app.get("/dailymessage")
 @limiter.limit(5, 10)
 async def dailymessage(request):
-    return json({"message": app.ctx.dailymessage}, status=200)
+    return json({"data": app.ctx.dailymessage}, status=200)
 
 @app.exception(Exception)
 async def catch_anything(request, exception):
@@ -50,7 +50,7 @@ async def catch_anything(request, exception):
 @checker.args_checker(False)
 async def users(req, page):
     users = await database.list_users(app.ctx.db, int(page))
-    return json(users, status=200)
+    return json({"data": users}, status=200)
 
 
 @app.post("/login")
@@ -60,7 +60,7 @@ async def login(req, username, password):
     if username and password:
         res, tk = await database.login(app.ctx.db, username, password)
         if res:
-            return json({"token": tk.decode("utf8")}, status=200)
+            return json({"data": tk.decode("utf8")}, status=200)
         else:
             return json({"error": "Invalid username or password"}, status=400)
     else:
@@ -75,7 +75,7 @@ async def signup(req, arg_list):
     if not res:
         return json({"error":"Error creating user in the database. Maybe the username is already taken?"}, status=400)
     else:
-        return json({"success": True}, status=200)
+        return json({"data": True}, status=200)
 
 
 @app.post("/remove")
@@ -86,7 +86,7 @@ async def remove_user(req, token):
     if not res:
         return json({"error": "Error removing user from database. Is the token correct?"}, status=401)
     else:
-        return json({"status": 200})
+        return json({"data": True})
 
 
 @app.get("/find/<username>")
@@ -94,7 +94,7 @@ async def remove_user(req, token):
 @checker.args_checker(False)
 async def find_users(req, username):
     users = await database.find_user(app.ctx.db, username)
-    return json(users, status=200)
+    return json({"data": users}, status=200)
 
 
 @app.post("/edit")
@@ -106,15 +106,15 @@ async def edit_user(req, token):
     discord = req.form.get("discord")
     twitter = req.form.get("twitter")
     bio = req.form.get("bio")
-    print(token)
+
     res = await database.edit_user(app.ctx.db, token.encode("utf8"), email, discord, twitter, bio)
 
     if not res:
         return json({"error": "Error editing profile. If username and token are correct please open an issue"}, status=401)
     else:
-        return json({"status": 200})
+        return json({"data": True})
 
 
 app.add_task(get_daily_message(app))
 
-app.run(host="0.0.0.0", port=int(ENV["PORT"]), debug=False)
+app.run(host="0.0.0.0", port=int(os.environ["PORT"]), debug=False)
