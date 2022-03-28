@@ -1,118 +1,60 @@
-class ServerAPI {
-    constructor() {
-        this.url = "https://librehomework-api.herokuapp.com/";
+import { invoke } from "@tauri-apps/api";
 
-        let res = fetch(this.url + "dailymessage/").then((r) => {
-            if (r.status == 200) {
-                return [true, r.json()];
-            }
-            else {
-                return [false, r.status];
-            }
-        }); //should a different function for /dailymessage exist?
+
+class ApiResponse {
+    constructor(payload) {
+        this.status = payload[1];
+        this.data = data[0];
+    }
+}
+
+
+class ServerAPI {
+    
+    async getDailyMessage() {
+        return new ApiResponse(await invoke("request", {"url": "dailymessage"}));
     }
 
     async getUsers(page=0) {
-        let res = await fetch(this.url + "users/" + page);
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+        return new ApiResponse(await invoke("request", {"url": "users/" + page}));
+
     }
 
     async findUser(username) {
-        let res = await fetch(this.url + "find/" + username);
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+        return new ApiResponse(await invoke("request", {"url": "find/" + username}));
     }
 
     async login(username, password) {
-        let res = await fetch(this.url + "login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
-        });
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+        return new ApiResponse(await invoke("request", {"url": "login", "method": "POST", "body": JSON.stringify({
+            "username": username,
+            "password": password
+        })}));
+
     }
 
-    async register(username, password, email, discord, twitter, bio) {
-        let res = await fetch(this.url + "register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-                email: email,
-                discord: discord,
-                twitter: twitter,
-                bio: bio
-            })
-        });
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+    async signup(username, password, email=null, discord=null, twitter=null, bio=null) {
+        return new ApiResponse(await invoke("request", {"url": "signup", "method": "POST", "body": JSON.stringify({
+            "username": username,
+            "password": password,
+            "email": email,
+            "discord": discord,
+            "twitter": twitter,
+            "bio": bio
+        })}));
     }
 
     async deleteAccount(token) {
-        let res = await fetch(this.url + "remove", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                token: token
-            })
-        });
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+        return new ApiResponse(await invoke("request", {"url": "remove", "method": "POST", "body": JSON.stringify({
+            "token": token
+        })}));
     }
 
     //password or username cannot be changed, althought I might add a way to change it in the future
-    async editProfile(token, email, discord, twitter, bio) {
-        let res = await fetch(this.url + "edit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                token: token,
-                email: email,
-                discord: discord,
-                twitter: twitter,
-                bio: bio
-            })
-        });
-        if (res.status == 200) {
-            return [true, res.json()];
-        }
-        else {
-            return [false, res.status];
-        }
+    //server should handle the optional fields but check if at least one param is not null
+    async editProfile(token, email=null, discord=null, twitter=null, bio=null) {
+        return new ApiResponse(await invoke("request", {"url": "remove", "method": "POST", "body": JSON.stringify({
+            "token": token
+        })}));
     }
 
 

@@ -6,13 +6,14 @@
 
 mod db;
 mod models;
-mod network;
 mod utils;
+mod network;
+
 use tauri::{Manager, RunEvent};
 use std::sync::atomic::{AtomicBool, Ordering};
 use db::*;
 use utils::*;
-
+use network::*;
 
 static IS_LOCKED: AtomicBool = AtomicBool::new(false);
 
@@ -51,6 +52,7 @@ fn main() {
       remove_task,
       get_tasks,
       get_subjects,
+      request,
       add_subject,
       remove_subject,
       write_config_file,

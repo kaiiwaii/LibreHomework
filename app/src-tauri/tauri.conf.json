@@ -56,7 +56,7 @@
       
       "fs": {
       	"all": true,
-      	"scope": ["$DOCUMENT/LibreHomework/*"],
+      	"scope": ["$CONFIG/LibreHomework/*"]
       }
     },
     "windows": [
