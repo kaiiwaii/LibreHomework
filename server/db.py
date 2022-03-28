@@ -66,6 +66,8 @@ async def login(db, username, password):
         SELECT username FROM users where password = $1 and username = $2
         """, utils.hash(password.encode("utf8")), username)
 
+        if not db_username: return False, None
+
         if db_username["username"] == username:
             return True, authtoken.generate_token(username, 15) #15 minutes
         else:

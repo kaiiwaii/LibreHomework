@@ -1,7 +1,7 @@
 use reqwest;
 
 use serde::{Serialize, Deserialize};
-use serde_json;
+use std::collections::HashMap;
 
 const APIURL: &str = "https://librehomework-api.herokuapp.com/";
 
@@ -22,16 +22,17 @@ impl std::convert::From<reqwest::Error> for ApiResponse {
 
 
 #[tauri::command]
-pub async fn request(url: &str, method: Option<&str>, body: Option<String>) -> Result<(ApiResponse, u16), String> {
+pub async fn request(url: &str, method: Option<&str>, form: Option<HashMap<String, String>>) -> Result<(ApiResponse, u16), String> {
     let mut _url = url.to_string();
     let client = reqwest::Client::new();
-    if &url.len() > &8 && &url[0..8] != "https://" {
+    if !url.contains("https://") {
         _url = APIURL.to_owned() + &_url;
     }
+
     println!("{}", &_url);
     let res = match method {
         Some(m) => if m == "POST" {
-                            client.post(_url).json(&body).send().await
+                            client.post(_url).form(&form).send().await
                         } else {
                             client.get(_url).send().await
                         },
