@@ -19,13 +19,11 @@ pub struct DaemonConfig {
 impl DaemonConfig {
     pub fn read_config() -> Option<DaemonConfig> {
         let path = config_dir()?.join("LibreHomework/daemonconfig.json");
-        println!("{:?}", path.exists());
         if !path.exists() {
             println!("Daemon config file not found, creating default config");
             DaemonConfig::write_config(default_daemon_config());
         }
         let config_file = std::fs::read_to_string(path).ok()?;
-        println!("here");
         serde_json::from_str::<HashMap<&str, DaemonConfig>>(&config_file).ok()?.get("daemon").cloned()
     }
 
