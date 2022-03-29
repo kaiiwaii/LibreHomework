@@ -40,11 +40,24 @@ let timedLockSwitchIsDisabled = false;
 let settings = {};
 
 async function setup() {
-	let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
+	try {
+		let lang = await conf.readConfig().misc.lang
+	} catch (e) {
+		console.log(e);
+		await conf.writeConfig(defaultConfig);
+		let lang = await conf.readConfig().misc.lang
+	}
+	
 	currentLang = lang;
-	return locales[lang];
+	try {
+		console.log(locales[lang])
+		return locales[lang];
+	} catch (e) {
+		console.log(locales["en"])
+		return locales["en"];
+	}
 }
-
+/*
 async function getLangs() {
 	let langs = [];
 	langs.push( JSON.parse(await conf.readConfig()).misc.lang );
@@ -53,6 +66,7 @@ async function getLangs() {
 }
 
 window.getlangs = getLangs;
+*/
 
 function saveSettings() {
 	let newSettings = defaultConfig;
@@ -326,7 +340,7 @@ function saveSettings() {
 			<div class="empty bg-dark">
 				<div class="empty-icon">
 					<i class="icon icon-3x icon-cross"></i>
-				</div>
+					</div>
 				<p class="empty-title h5">{dict.tasks_error}</p>
 			</div>
 		{/await}
@@ -366,6 +380,7 @@ function saveSettings() {
 				<i class="icon icon-3x icon-cross"></i>
 			</div>
 			<p class="empty-title h5">Could not load language data</p>
+			<p>{error.message}</p>
 			<p class="empty-subtitle">Try searching for this issue on our GitHub repo. If you can not find a GitHub issue around this, please create one.</p>
 		</div>
 	{/await}

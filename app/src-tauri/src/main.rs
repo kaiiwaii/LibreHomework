@@ -58,6 +58,7 @@ fn main() {
       write_config_file,
       read_config_file,
       close_splashscreen,
+      get_syslang,
     ])
     .build(tauri::generate_context!())
     .expect("Error while running LibreHomework");

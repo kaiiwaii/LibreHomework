@@ -17,6 +17,7 @@ select bin in "${bin_types[@]}"; do
             curl -L -s $source -o "LibreHomework-Source_${LATVER}.zip"
             echo "Extracting zip file..."
             unzip "LibreHomework-Source_${LATVER}.zip" > /dev/null
+            rm "LibreHomework-Source_${LATVER}.zip"
             echo "Done, you can now compile it by typing cd LibreHomework-Source_${LATVER} && npm i && npm run tauri build"
             break
             ;;
@@ -25,6 +26,7 @@ select bin in "${bin_types[@]}"; do
             curl -L -s $deb -o "LibreHomework_${LATVER}.deb"
             echo "Enter the password to install the package:"
             sudo dpkg -i "LibreHomework_${LATVER}.deb" > /dev/null
+            rm "LibreHomework_${LATVER}.deb"
             echo "Done, you can now launch it from the menu or the command line with libre-homework"
             break
             ;;
@@ -46,6 +48,7 @@ done
 echo "Do you want to download, install and configure the daemon? (y/n)"
 read daemon
 if [ $daemon = "y" ]; then
+
     echo "Downloading daemon executable..."
     curl -L -s "https://github.com/HGEpro/LibreHomework/releases/download/${LATVER}/librehomework-daemon_v1.0.0_amd64" -o "librehomework-daemon_${LATVER}_amd64"
     sudo mv "librehomework-daemon_${LATVER}_amd64" /usr/bin/librehomeworkd

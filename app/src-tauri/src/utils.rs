@@ -10,6 +10,18 @@ pub fn stop_app(msg: &str) -> ! {
 }
 
 #[tauri::command]
+pub fn get_syslang() -> String {
+
+  let locale = if let Ok(lang) = std::env::var("LANG") {
+    lang[..2].to_string()
+  } else {
+    "en".to_string()
+  };
+  return locale
+
+}
+
+#[tauri::command]
 pub fn read_config_file() -> Option<String> {
     let mut file = File::open(config_dir()?.join("LibreHomework/config.json")).ok()?;
     let mut contents = String::new();

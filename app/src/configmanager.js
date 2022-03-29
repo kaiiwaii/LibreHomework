@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/tauri";
 
-export const defaultConfig = { "misc": {"lang": "es"}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}
+let syslang = invoke("get_syslang").then(lang => {return lang});
+
+export const defaultConfig = {"misc": {"lang": syslang}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}
 
 export class ConfigManager {
     async initDefaultConfig() {
@@ -13,7 +15,7 @@ export class ConfigManager {
     }
 
     async writeConfig(config) {
-        // Actually this is not very safe, it might lead to a little self-XSS vuln, but anyway... 😳
+
         return await invoke("write_config_file", {"contents": JSON.stringify(
             config, null, 4)});
     }
