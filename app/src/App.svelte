@@ -333,7 +333,9 @@ function saveSettings() {
 		{/key}
 	</div>
 	{:else if tab == 3}
-	<div>Coming soon...</div>
+	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
+		<p class="empty-title h4" in:slide="{{delay: 100}}">Coming soon...</p>
+	</div>
 	{:else if tab == 4}
 	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
 		<div class="empty-icon" in:slide>
