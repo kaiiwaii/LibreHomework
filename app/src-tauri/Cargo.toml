@@ -1,21 +1,21 @@
 [package]
-name = "app"
+name = "LibreHomework-App"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
-default-run = "app"
+description = "Tools for the student"
+authors = ["hgepro"]
+license = "GPL-3.0"
+repository = "https://github.com/HGEpro/LibreHomework"
+default-run = "LibreHomework-App"
 edition = "2021"
 build = "src/build.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.0-beta.4", features = [] }
+tauri-build = { version = "1.0.0-rc", features = [] }
 
 [dependencies]
-tauri = { version = "1.0.0-beta.8", features = ["fs-all", "window-all"] }
+tauri = { version = "1.0.0-rc", features = ["fs-all", "window-all"] }
 rusqlite = "0.26.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

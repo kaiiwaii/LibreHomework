@@ -6,13 +6,15 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "tauricon": "tauricon"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@tauri-apps/cli": "^1.0.0-rc.2",
+    "@tauri-apps/tauricon": "github:tauri-apps/tauricon",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
