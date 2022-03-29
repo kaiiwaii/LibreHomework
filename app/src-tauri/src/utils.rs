@@ -2,6 +2,7 @@ use std::io::{Write, Read};
 use std::fs::{OpenOptions, File, create_dir, remove_file};
 use std::path::Path;
 use tauri::api::path::config_dir;
+use tauri::Manager;
 
 pub fn stop_app(msg: &str) -> ! {
     println!("{}", msg);
@@ -34,4 +35,13 @@ pub fn write_config_file(contents: &str) -> Option<bool> {
         .ok()?;
     file.write_all(contents.as_bytes()).ok()?;
     Some(true)
+}
+
+#[tauri::command]
+pub async fn close_splashscreen(window: tauri::Window) {
+  if let Some(splashscreen) = window.get_window("splashscreen") {
+    splashscreen.close().unwrap();
+  }
+  
+  window.get_window("main").unwrap().show().unwrap();
 }

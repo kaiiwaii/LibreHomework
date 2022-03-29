@@ -9,7 +9,7 @@ mod models;
 mod utils;
 mod network;
 
-use tauri::{Manager, RunEvent};
+use tauri::{RunEvent, WindowEvent, Manager};
 use std::sync::atomic::{AtomicBool, Ordering};
 use db::*;
 use utils::*;
@@ -57,21 +57,26 @@ fn main() {
       remove_subject,
       write_config_file,
       read_config_file,
+      close_splashscreen,
     ])
     .build(tauri::generate_context!())
     .expect("Error while running LibreHomework");
 
   app.run(|app_handle, event| match event {
     
-    RunEvent::CloseRequested {label, api, ..} => {
-      if IS_LOCKED.load(Ordering::Relaxed) {
-        api.prevent_close()
+    RunEvent::WindowEvent {label, event, ..} => {
+      match event {
+        WindowEvent::CloseRequested{api, ..} => {
+          if IS_LOCKED.load(Ordering::Relaxed) {
+            api.prevent_close();
+          } else {
+            app_handle.get_window(&label).unwrap().close().unwrap();
+          }
+        },
+        _ => {}
       }
-      else {
-        app_handle.get_window(&label).unwrap().close().unwrap();
-      }
-    }
-
+    },
+      
     _ => {}
   })
 }

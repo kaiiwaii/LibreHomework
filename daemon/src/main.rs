@@ -48,12 +48,14 @@ fn main() {
         while c < config.remind_limit.unwrap() && c < tasks.len() as u32 {
             let task = tasks.get(c as usize).unwrap();
 
-            if task.expires_at < std::time::SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() {
+            if task.expires_at < unix_now() {
                 notify(LogType::Warning, &format!("Task {} is expired", task.name));
 
             } else {
-                notify(LogType::Info, &format!("Task {} expires in {}", task.name, choose_time(task.expires_at - SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()) ));
+                println!("{}", task.expires_at - unix_now());
+                notify(LogType::Info, &format!("Task {} expires in {}", task.name, choose_time(task.expires_at)));
             }
+            
             c += 1;
         }
 
@@ -66,14 +68,35 @@ fn main() {
     }
 }
 
-pub fn choose_time(secs: u64) -> String {
-    if secs < 60 {
-        return format!("{} seconds", secs);
-    } else if secs < 60 * 60 {
-        return format!("{} minutes", secs / 60);
-    } else if secs < 60 * 60 * 24 {
-        return format!("{} hours", secs / (60 * 60));
-    } else {
-        return format!("{} days", secs / (60 * 60 * 24));
+
+fn unix_now() -> u64 {
+    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs()
+}
+
+
+fn choose_time(expires_at: u64) -> String {
+    println!("expires_at: {}", expires_at);
+    let now = unix_now();
+    println!("now: {}", now);
+    let diff = expires_at - now;
+    println!("diff: {}", diff);
+
+    if diff < 60 {
+        return "less than a minute".to_string();
     }
+
+    if diff < 3600 {
+        return format!("{} minutes", diff / 60);
+    }
+
+    if diff < 86400 {
+        return format!("{} hours", diff / 3600);
+    }
+
+    if diff < 2592000 {
+        return format!("{} days", diff / 86400);
+    }
+
+    format!("{} months", diff / 2592000)
+    
 }
