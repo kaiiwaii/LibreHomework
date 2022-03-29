@@ -11,7 +11,7 @@ class ApiResponse {
 }
 
 
-class ServerAPI {
+export class ServerAPI {
     
     async getDailyMessage() {
         return new ApiResponse(await invoke("request", {"url": "dailymessage"}));
@@ -60,5 +60,3 @@ class ServerAPI {
     }
 
 }
-
-export default ServerAPI;

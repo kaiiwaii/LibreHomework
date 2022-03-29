@@ -45,7 +45,10 @@
         "seconds": "Seconds",
         "about_timed_lock": "Enter the amount of hours, minutes and/or seconds you want the timed lock to last. All values are optional, and the default timeout is five seconds.",
         "network": "Network",
-        "network_error": "Network error"
+        "network_error": "Network error",
+        "coming_soon": "Coming soon...",
+        "exam": "Exams",
+        "daily_message": "Daily message"
     },
     "es": {
         "language": "Idioma",
@@ -93,7 +96,10 @@
         "seconds": "Segundos",
         "about_timed_lock": "Introduce la cantidad de horas, minutos y/o segundos que quieres que tarde el bloqueo de pantalla. Todos los valores son opcionales, y la espera por defecto son cinco segundos.",
         "network": "Red",
-        "network_error": "Error de red"
+        "network_error": "Error de red",
+        "coming_soon": "Próximamente...",
+        "exam": "Exámenes",
+        "daily_message": "Mensaje diario"
     },
     "eo": {
         "language": "Lingvo",
@@ -140,7 +146,10 @@
         "minutes": "Minutoj",
         "seconds": "Sekundoj",
         "about_timed_lock": "Enigu la kvanto da horoj, minutoj kaj/aŭ sekundoj, kiuj vi volas, ke la tempata ŝlosado daŭros. Ĉiuj kampoj estas nedevigaj, kaj la defaŭlta tempo estas kvin sekundoj.",
-        "network": "",
-        "network_error": ""
+        "network": "Reto",
+        "network_error": "Reta eraro",
+        "coming_soon": "Baldaŭe...",
+        "exam": "Testoj",
+        "daily_message": "Ĉiutaga mesaĝo"
     }
 }

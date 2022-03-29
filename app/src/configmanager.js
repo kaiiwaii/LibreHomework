@@ -1,11 +1,10 @@
 import { invoke } from "@tauri-apps/api/tauri";
 
-let syslang = invoke("get_syslang").then(lang => {return lang});
-
-export const defaultConfig = {"misc": {"lang": syslang}, "colors": {"primary": "#3942ed", "secondary": "5056c7"}}
-
+export const defaultConfig = { "misc": { "lang": "en" }, "colors": { "primary": "#3942ed", "secondary": "5056c7" } }
 export class ConfigManager {
     async initDefaultConfig() {
+    	let dconf = defaultConfig;
+    	dconf.misc.lang = await invoke("get_syslang") || "en";    	
         return await invoke("write_config_file", {"contents": JSON.stringify(
             defaultConfig, null, 4)});
     }

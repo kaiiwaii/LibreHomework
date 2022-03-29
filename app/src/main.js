@@ -2,7 +2,6 @@ import { app, invoke } from '@tauri-apps/api';
 import { ConfigManager } from "./configmanager.js";
 //import { ScreenLock } from './screenlock';
 import App from './App.svelte';
-import ServerAPI from "./network.js"
 
 const svapp = new App({
 	target: document.body
