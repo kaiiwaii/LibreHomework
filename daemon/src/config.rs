@@ -4,7 +4,6 @@ use dirs_next::config_dir;
 use std::collections::HashMap;
 
 
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(default = "default_daemon_config")]
 pub struct DaemonConfig {
