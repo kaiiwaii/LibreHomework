@@ -48,7 +48,8 @@
         "network_error": "Network error",
         "coming_soon": "Coming soon...",
         "exam": "Exams",
-        "daily_message": "Daily message"
+        "daily_message": "Daily message",
+        "daily_message_error": "Daily message: cannot get message from server"
     },
     "es": {
         "language": "Idioma",
@@ -99,7 +100,8 @@
         "network_error": "Error de red",
         "coming_soon": "Próximamente...",
         "exam": "Exámenes",
-        "daily_message": "Mensaje diario"
+        "daily_message": "Mensaje diario",
+        "daily_message_error": "Mensaje diario: no se ha podido obtener el mensaje del servidor"
     },
     "eo": {
         "language": "Lingvo",

@@ -36,12 +36,12 @@ fn main() {
     
     match std::fs::create_dir(&appdir) {
       Err(e) => stop_app(&format!("Failed to create app directory: {}", e)),
-      Ok(_) => {},
-    }
+      Ok(_) => write_config_file(r##"{ "misc": { "lang": "en" }, "colors": { "primary": "#3942ed", "secondary": "5056c7" } }"##), //default conf, fixes bug
+    };
 
   }
   appdir.push("LibreHomework.db");
-
+  
   let app = tauri::Builder::default()
     .manage(DBManager::prepare_connection(appdir.as_path()))
     .invoke_handler(tauri::generate_handler![

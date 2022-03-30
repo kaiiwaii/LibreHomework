@@ -101,7 +101,7 @@ function saveSettings() {
 			{:then msg}
 				<p>{dict.daily_message}{#if !msg.error}<span>: {msg.data}</span>{/if}</p>
 			{:catch e}
-			<p>{dict.daily_message}</p>
+			<p>{dict.daily_message_error}</p>
 			{/await}
 		</div>
 	</div>
