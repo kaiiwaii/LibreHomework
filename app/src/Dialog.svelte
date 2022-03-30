@@ -23,7 +23,7 @@
 	}
 
 	async function setup() {
-		let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
+		let lang = JSON.parse(await conf.readConfig()).misc.lang || "en";
 		return locales[lang];
 	}
 
