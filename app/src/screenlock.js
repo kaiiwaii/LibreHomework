@@ -9,7 +9,6 @@ export class ScreenLock {
 
   Start(seconds) {
     let counter = seconds;
-    //console.log(this.winmanager);
     let winmanager = getCurrent();
 
     invoke("set_screen_lock", {val: true});

@@ -116,11 +116,14 @@ function saveSettings() {
 		<li class="tab-item { tab == 2 ? 'active' : ''}">
 			<a href="#subjects" on:click={() => { tab = 2 }}>{dict.subjects}</a>
 		</li>
-		<li class="tab-item { tab == 3 ? 'active' : ''}">
-			<a href="#network" on:click={() => { tab = 3 }}>{dict.network}</a>
-		</li>
 		<li class="tab-item { tab == 5 ? 'active' : ''}">
 			<a href="#exam" on:click={() => { tab = 5 }}>{dict.exam}</a>
+		</li>
+		<li class="tab-item { tab == 6 ? 'active' : ''}">
+			<a href="#documents" on:click={() => { tab = 6 }}>{dict.documents}</a>
+		</li>
+		<li class="tab-item { tab == 3 ? 'active' : ''}">
+			<a href="#network" on:click={() => { tab = 3 }}>{dict.network}</a>
 		</li>
 		<li class="tab-item { tab == 4 ? 'active' : ''}">
 			<a href="#settings" on:click={() => { tab = 4 }}>{dict.settings}</a>
@@ -359,10 +362,17 @@ function saveSettings() {
 	{:else if tab == 3}
 	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
 		<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.coming_soon}</p>
+		<p>{dict.network_hint}</p>
 	</div>
 	{:else if tab == 5}
 	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
 		<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.coming_soon}</p>
+		<p>{dict.exam_hint}</p>
+	</div>
+	{:else if tab == 6}
+	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
+		<p class="empty-title h4" in:slide="{{delay: 100}}">{dict.coming_soon}</p> <!-- Store documents in an ordered way -->
+		<p>{dict.documents_hint}</p>
 	</div>
 	{:else if tab == 4}
 	<div class="empty bg-dark pt-3 pb-6" out:fade="{{ duration: 200 }}">
