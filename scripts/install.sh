@@ -68,7 +68,7 @@ if [ $daemon = "y" ]; then
                 echo "The daemon is already in crontab"
             else
                 echo "Adding the daemon to crontab..."
-                crontab -l > crontab.tmp
+                crontab -l >> crontab.tmp
                 echo "@reboot /usr/bin/librehomeworkd" >> crontab.tmp
                 crontab crontab.tmp
                 rm crontab.tmp

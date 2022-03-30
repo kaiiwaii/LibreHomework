@@ -6,10 +6,10 @@ if [ $continue = "y" ]; then
 
     if crontab -l | grep -q "/usr/bin/librehomeworkd"; then
         echo "The daemon is in crontab, removing it..."
-        crontab -l > crontab.tmp
+        crontab -l >> crontab.tmp
 
         line=$(grep -n 'librehomeworkd' crontab.tmp)
-        sed ${line:0:1}d cron.tmp > _crontab.tmp
+        sed ${line:0:1}d crontab.tmp > _crontab.tmp
 
         crontab -r
         crontab _crontab.tmp
