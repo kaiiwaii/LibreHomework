@@ -40,7 +40,7 @@
 
 		tempDate.setHours( taskData.time.match( /(\d{2}):\d{2}/ )[1] );
 		tempDate.setMinutes( taskData.time.match( /\d{2}:(\d{2})/ )[1] );
-		console.log(tempDate.getTime());
+
 		if (tempDate.getTime() / 1000 < Date.now()) {
 			dateError = "date_past";
 			return;
