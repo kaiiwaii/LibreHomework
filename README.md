@@ -1,7 +1,8 @@
-# LibreHomework
+<h1>LibreHomework</h1>
 
-<img src="https://github.com/HGEpro/LibreHomework/app/src-tauri/iconsSquare310x312Logo.png"/>
-
+<p align="center">
+    <img src="https://github.com/HGEpro/LibreHomework/blob/main/app/src-tauri/icons/Square310x310Logo.png"/>
+</p>
 
 LibreHomework is an app made by students and for students. Features:
 - Adding and removing tasks which are notified by a daemon (only in GNU/Linux)
