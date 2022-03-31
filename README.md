@@ -50,6 +50,12 @@ If you want to contribute to the project, you can fork the project and make your
 ## Credits
 Thanks to [Wolfram](https://github.com/fabiopolancoe) for the UI code and [YeahNotSewerSide](https://github.com/DoctorEenot) for the technical support.
 
+## Translations
+- Russian translation by [YeahNotSewerSide](https://github.com/DoctorEenot)
+- Esperanto translation by [Wolfram](https://github.com/fabiopolancoe)
+- Portuguese translation by [LDarki](https://github.com/LDarki)
+- Polish translation by [Revox](https://github.com/revoxhere)
+
 ## Additional info
 This project has been created for the [YH4F](https://fsfe.org/activities/yh4f/) 2021-2022.
 
