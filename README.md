@@ -1,6 +1,9 @@
 # LibreHomework
 
-LibreHomework is an app made by students and for students. Features
+![Logo](/LibreHomework/app/src-tauri/iconsSquare310x312Logo.png/ "Employee Data title")
+
+
+LibreHomework is an app made by students and for students. Features:
 - Adding and removing tasks which are notified by a daemon (only in GNU/Linux)
 - Manage your subjects
 - Lock your screen to prevent distractions
