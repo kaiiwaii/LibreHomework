@@ -1,6 +1,6 @@
 # LibreHomework
 
-![Logo](/LibreHomework/app/src-tauri/iconsSquare310x312Logo.png/ "Employee Data title")
+<img src="https://github.com/HGEpro/LibreHomework/app/src-tauri/iconsSquare310x312Logo.png"/>
 
 
 LibreHomework is an app made by students and for students. Features:
