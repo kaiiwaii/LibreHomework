@@ -7,7 +7,7 @@ LibreHomework is an app made by students and for students. Features
 - Manage your exams (coming soon, 50% done)
 - Manage your Documents (coming soon, 50% done)
 - Custom network where you can meet other students through their profiles (coming soon, 50% done)
-- Available in multiple languages
+- Available in multiple languages (en/es/eo/ru/pt/pl) and more coming soon (fr/de)
 
 ## Project info
 The project is divided in 3 parts:
@@ -22,6 +22,8 @@ In GNU/Linux you can also use a custom installation [script](https://github.com/
 ```
 bash <(curl -sL https://raw.githubusercontent.com/HGEpro/LibreHomework/main/scripts/install.sh)
 ```
+
+For windows users: the app should compile and run fine but it hasn't been tested. There are no compiled releases for windows due to compilation problems, so if you want to contribute you can start with that.
 
 ## Setup
 To run or compile the app from source, you can use follow the steps below:
