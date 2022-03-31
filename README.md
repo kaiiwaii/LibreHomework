@@ -18,12 +18,12 @@ The project is divided in 3 parts:
 ## Installation
 You can found the compiled releases in the [Releases section](https://github.com/HGEpro/LibreHomework/releases).
 
-In GNU/Linux you can also use a custom installation [script](https://github.com/HGEpro/LibreHomework/tree/main/scripts)_
+In GNU/Linux you can also use a custom installation [script](https://github.com/HGEpro/LibreHomework/tree/main/scripts)
 ```
 bash <(curl -sL https://raw.githubusercontent.com/HGEpro/LibreHomework/main/scripts/install.sh)
 ```
 
-For windows users: the app should compile and run fine but it hasn't been tested. There are no compiled releases for windows due to compilation problems, so if you want to contribute you can start with that.
+**For Windows users:** the app should compile and run fine but it hasn't been tested. There are no compiled releases for windows due to compilation problems, so if you want to contribute you can start with that.
 
 ## Setup
 To run or compile the app from source, you can use follow the steps below:
