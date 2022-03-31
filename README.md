@@ -41,5 +41,5 @@ If you want to contribute to the project, you can fork the project and make your
 Thanks to [Wolfram](https://github.com/fabiopolancoe) for the UI code and [YeahNotSewerSide](https://github.com/DoctorEenot) for the technical support.
 
 ## Additional info
-This project has been created for the [YH4F](https://fsf.org/yh4f).
+This project has been created for the [YH4F](https://fsfe.org/activities/yh4f/) 2021-2022.
 
