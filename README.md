@@ -24,7 +24,11 @@ bash <(curl -sL https://raw.githubusercontent.com/HGEpro/LibreHomework/main/scri
 ```
 
 ## Setup
-To run or compile the app from source, you can use the following commands:
+To run or compile the app from source, you can use follow the steps below:
+
+[Install Tauri and all the dependencies](https://tauri.studio/docs/getting-started/prerequisites)
+
+Run these commands:
 
 ```
 $ cd LibreHomework/app
@@ -49,6 +53,12 @@ If you want to contribute to the project, you can fork the project and make your
 
 ## Credits
 Thanks to [Wolfram](https://github.com/fabiopolancoe) for the UI code and [YeahNotSewerSide](https://github.com/DoctorEenot) for the technical support.
+
+## Translations
+- Russian translation by [YeahNotSewerSide](https://github.com/DoctorEenot)
+- Esperanto translation by [Wolfram](https://github.com/fabiopolancoe)
+- Portuguese translation by [LDarki](https://github.com/LDarki)
+- Polish translation by [Revox](https://github.com/revoxhere)
 
 ## Additional info
 This project has been created for the [YH4F](https://fsfe.org/activities/yh4f/) 2021-2022.
