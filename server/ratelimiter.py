@@ -1,36 +1,53 @@
-from functools import wraps
 import time
-from sanic.response import json
 
-class RateLimiter:
-    def __init__(self):
-        self.storage = {}
+class TokenBucket:
+    '''
+    Implementation of TokenBucket
+    '''
+    def __init__(self,tokens:int,time_for_token:int):
+        '''
+        tokens:int - maximum amount of tokens
+        time_for_token: - time in which 1 token is added  
+        '''
+        self.token_koef = tokens/time_for_token
+        self.tokens = tokens
+        self.last_check = time.time()
 
-    
-    async def limit(self, calls, per_second, func, request, *args, **kwargs):
-
+    def handle(self) -> bool:
         current_time = time.time()
-        cell = self.storage.get(request.ip)
+        time_delta = current_time - self.last_check
+        self.last_check = current_time
 
-        if not cell:
-            cell = [calls-1, current_time]
-            self.storage[request.ip] = cell
-            return await func(request,*args,**kwargs)
+        self.tokens += time_delta*self.token_koef
 
-        time_delta = current_time - cell[-1]
-        to_add = int(time_delta*(calls/per_second))
-        cell[0] += to_add
+        if self.tokens > self.max_tokens:
+            self.tokens = self.max_tokens
+        
+        if self.tokens < 1:
+            return False
+        
+        self.tokens -= 1
+        return True
 
-        if cell[0] > calls:
-            cell[0] = calls
-                    
-        if cell[0] <= 0:
-            return json({"success": False, "ratelimit": True})
 
-        self.storage[request.ip][0] -= 1
-        self.storage[request.ip][1] = current_time
-        return await func(request, *args, **kwargs)
+GLOBAL_BUCKETS = {}
 
+def limit(tokens:int,time_for_token:int):
+    def wrapper(function):
+        def wrapped(*args,**kwargs):
+            fn_name = function.__name__
+            try:
+                bucket = GLOBAL_BUCKETS[fn_name]
+            except:
+                bucket = TokenBucket(tokens,time_for_token)
+                GLOBAL_BUCKETS[fn_name] = bucket
+
+            if not bucket.handle():
+                return json({"success": False, "ratelimit": True})
+
+            return function(*args,**kwargs)
+        return wrapped
+    return wrapper
 
 class EndpointLimiter:
     def __init__(self):
