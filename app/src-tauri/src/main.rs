@@ -8,9 +8,13 @@ mod db;
 mod models;
 mod utils;
 mod network;
+mod tasks;
+mod documents;
 
 use tauri::{RunEvent, WindowEvent, Manager};
 use std::sync::atomic::{AtomicBool, Ordering};
+use tasks::*;
+use documents::*;
 use db::*;
 use utils::*;
 use network::*;

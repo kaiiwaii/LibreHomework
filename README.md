@@ -18,6 +18,11 @@ The project is divided in 3 parts:
 ## Installation
 You can found the compiled releases in the [Releases section](https://github.com/HGEpro/LibreHomework/releases).
 
+In GNU/Linux you can also use a custom installation [script](https://github.com/HGEpro/LibreHomework/tree/main/scripts)_
+```
+bash <(curl -sL https://raw.githubusercontent.com/HGEpro/LibreHomework/main/scripts/install.sh)
+```
+
 ## Setup
 To run or compile the app from source, you can use the following commands:
 
@@ -32,6 +37,11 @@ $ npm run tauri dev
 And for building the app you can use:
 ```
 $ npm run tauri build
+```
+
+For the daemon you can simply type:
+```
+$ cd LibreHomework/daemon && cargo build --release
 ```
 
 ## Contributing
