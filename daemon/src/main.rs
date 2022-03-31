@@ -52,7 +52,6 @@ fn main() {
                 notify(LogType::Warning, &format!("Task {} is expired", task.name));
 
             } else {
-                println!("{}", task.expires_at - unix_now());
                 notify(LogType::Info, &format!("Task {} expires in {}", task.name, choose_time(task.expires_at)));
             }
             
@@ -75,11 +74,8 @@ fn unix_now() -> u64 {
 
 
 fn choose_time(expires_at: u64) -> String {
-    println!("expires_at: {}", expires_at);
     let now = unix_now();
-    println!("now: {}", now);
     let diff = expires_at - now;
-    println!("diff: {}", diff);
 
     if diff < 60 {
         return "less than a minute".to_string();
