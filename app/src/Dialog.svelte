@@ -36,11 +36,11 @@
 		if (!taskData.name && !taskData.subject && !taskData.date && !taskData.time) return;
 
 		let tempDate = taskData.jsDate.valueAsDate;
-		tempDate.setDate(tempDate.getDate() + 1);
+		tempDate.setDate(tempDate.getDate());
 
 		tempDate.setHours( taskData.time.match( /(\d{2}):\d{2}/ )[1] );
 		tempDate.setMinutes( taskData.time.match( /\d{2}:(\d{2})/ )[1] );
-
+		console.log(tempDate.getTime())
 		if (tempDate.getTime() < Date.now()) {
 			dateError = "date_past";
 			return;
