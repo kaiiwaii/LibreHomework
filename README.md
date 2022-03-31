@@ -4,9 +4,9 @@ LibreHomework is an app made by students and for students. Features
 - Adding and removing tasks which are notified by a daemon (only in GNU/Linux)
 - Manage your subjects
 - Lock your screen to prevent distractions
-- Manage your exams (coming soon!)
-- Manage your Documents (coming soon!)
-- Custom network where you can meet other students through their profiles (50% done)
+- Manage your exams (coming soon, 50% done)
+- Manage your Documents (coming soon, 50% done)
+- Custom network where you can meet other students through their profiles (coming soon, 50% done)
 - Available in multiple languages
 
 ## Project info
