@@ -23,7 +23,7 @@
 	}
 
 	async function setup() {
-		let lang = JSON.parse(await conf.readConfig()).misc.lang || "es";
+		let lang = JSON.parse(await conf.readConfig()).misc.lang || "en";
 		return locales[lang];
 	}
 
@@ -41,7 +41,7 @@
 		tempDate.setHours( taskData.time.match( /(\d{2}):\d{2}/ )[1] );
 		tempDate.setMinutes( taskData.time.match( /\d{2}:(\d{2})/ )[1] );
 
-		if (tempDate.getTime() < Date.now()) {
+		if (tempDate.getTime() / 1000 < Date.now()) {
 			dateError = "date_past";
 			return;
 		}
