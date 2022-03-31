@@ -151,19 +151,20 @@
         "empty": "Nula",
         "delete": "Forigi",
         "save": "Konservi",
-		"add_subjects_at_settings": "Vi povas aldoni temojn ĉe la agordoj de LibreHomework.",
+        "add_subjects_at_settings": "Vi povas aldoni temojn ĉe la Subjektoj langeto de LibreHomework.",
         "hours": "Horoj",
         "minutes": "Minutoj",
         "seconds": "Sekundoj",
         "about_timed_lock": "Enigu la kvanto da horoj, minutoj kaj/aŭ sekundoj, kiuj vi volas, ke la tempata ŝlosado daŭros. Ĉiuj kampoj estas nedevigaj, kaj la defaŭlta tempo estas kvin sekundoj.",
         "network": "Reto",
         "network_error": "Reta eraro",
-        "network_hint": "",
+        "network_hint": "La servilo de LibreHomework. Ĉi tiu trajto helpos vin renkontiĝi kun aliaj studantoj per iliaj profiloj.",
         "coming_soon": "Baldaŭe...",
         "exam": "Testoj",
-        "exam_hint": "",
-        "documents": "",
-        "documents_hint": "",
-        "daily_message": "Ĉiutaga mesaĝo"
+        "exam_hint": "Ĉi tiu trajto helpos vin konservi testojn kaj kunligi dokumentojn al ili",
+        "documents": "Dokumentoj",
+        "documents_hint": "Ĉi tiu trajto helpos vin aldoni dosierojn por organizi ilin kaj troviĝi dokumentojn pli facile",
+        "daily_message": "Ĉiutaga mesaĝo",
+        "daily_message_error": "Ĉiutaga mesaĝo: ne eblis ricevi mesaĝon el la servilo"
     }
 }
