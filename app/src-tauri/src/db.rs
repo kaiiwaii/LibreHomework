@@ -11,7 +11,7 @@ impl DBManager {
 
       conn.execute("CREATE TABLE IF NOT EXISTS Subjects (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        name TEXT NOT NULL)", [])
+        name TEXT UNIQUE NOT NULL)", [])
         .unwrap_or_else(|_| stop_app("Error creating table Subjects"));
 
       conn.execute("CREATE TABLE IF NOT EXISTS Tasks (

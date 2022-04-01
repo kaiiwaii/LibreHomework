@@ -1,8 +1,6 @@
 <script lang="js">
-	import { invoke } from "@tauri-apps/api";
 	import { fade, fly, slide, scale } from "svelte/transition";
 	import { onMount } from 'svelte';
-
 	import locales from "./locales.json";
 	import { ScreenLock } from "./screenlock.js";
 	import { ConfigManager, defaultConfig } from "./configmanager.js";
