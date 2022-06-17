@@ -1,0 +1,5 @@
+asyncpg
+sanic
+aiofiles
+asyncio
+cryptography
