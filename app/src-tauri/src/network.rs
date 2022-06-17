@@ -3,7 +3,7 @@ use reqwest;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
-const APIURL: &str = "https://librehomework-api.herokuapp.com/";
+const APIURL: &str = "https://librehomework-server.onrender.com/";
 
 #[derive(Deserialize, Serialize)]
 pub struct ApiResponse {
