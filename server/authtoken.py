@@ -29,7 +29,6 @@ def validate_token(token):
 
         if diff.total_seconds() / 60 > ttl:
             return False, None
-            print("Expired token")
         else:
             return True, username
 
