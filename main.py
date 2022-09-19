@@ -105,7 +105,10 @@ async def find_users(req, username):
 async def random_user(req):
     try:
         num = int(req.args["max"])
-        users = await database.random_user(app.ctx.db, num)
+        if num <= 5:
+            users = await database.random_user(app.ctx.db, num)
+        else:
+            users = await database.random_user(app.ctx.db, 1)
     except: #no arg or invalid int
         users = await database.random_user(app.ctx.db, 1)
     
