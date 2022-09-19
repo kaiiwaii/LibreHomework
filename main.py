@@ -101,7 +101,7 @@ async def find_users(req, username):
     return json({"data": users}, status=200)
 
 @app.get("/random")
-@limiter.limit(10,20)
+#@limiter.limit(10,20)
 async def random_user(req):
     try:
         num = int(req.args["max"])
