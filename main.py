@@ -100,6 +100,16 @@ async def find_users(req, username):
     users = await database.find_user(app.ctx.db, username)
     return json({"data": users}, status=200)
 
+@app.get("/random")
+@limiter.limit(10,20)
+async def random_user(req):
+    try:
+        num = int(req.args["max"])
+        users = await database.random_user(app.ctx.db, num)
+    except: #no arg or invalid int
+        users = await database.random_user(app.ctx.db, 1)
+    
+    return json(users)
 
 @app.post("/edit")
 #@limiter.limit(15, 1800)
