@@ -86,6 +86,15 @@ async def find_user(db, username):
             "twitter": row[4], "bio": row[5], "profile_picture": utils.get_gravatar(row[1])})
     return temp
 
+async def random_user(db, num):
+    temp = []
+    async with db.acquire() as pool:
+        q = await pool.fetch("SELECT username, email, created_at, discord, twitter, bio FROM users ORDER BY random() limit $1", num)
+        for row in q:
+            temp.append({"username": row[0], "email": row[1], "creation_date": mktime(row[2].timetuple()),"discord": row[3], 
+            "twitter": row[4], "bio": row[5], "profile_picture": utils.get_gravatar(row[1])})
+    return temp
+
 
 async def edit_user(db, token, email=None, discord=None, twitter=None, bio=None):
     res, username = authtoken.validate_token(token)
