@@ -33,7 +33,7 @@
       },
       "macOS": {
         "frameworks": [],
-        "minimumSystemVersion": ""
+        "minimumSystemVersion": "",
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,

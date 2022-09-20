@@ -1,5 +1,7 @@
-use std::error::Error;
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+
+use crate::errors::DBError;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
@@ -37,37 +39,36 @@ impl Subject {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Exam {
-    id: i32,
-    title: String,
-    description: Option<String>,
-    documents: Option<Vec<String>>
+    pub id: i32,
+    pub title: String,
+    pub description: Option<String>,
+    pub documents: Vec<Document>,
 }
 impl Exam {
     pub fn from_row(value: &rusqlite::Row<'_>) -> Result<Self, Box<dyn Error>> {
-        let documents: String = value.get(3)?;
         Ok(Exam {
             id: value.get(0)?,
             title: value.get(1)?,
             description: value.get(2)?,
-            documents: Some(documents.split(",").map(|s| s.to_string()).collect()),
+            documents: Vec::new(),
         })
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Document {
-    id: i32,
-    path: String,
-    filename: String,
-    description: Option<String>,
+    pub id: Option<i32>,
+    pub path: String,
+    pub filename: String,
+    pub description: String,
 }
 impl Document {
-    pub fn from_row(value: &rusqlite::Row<'_>) -> Result<Self, Box<dyn Error>> {
+    pub fn from_row(value: &rusqlite::Row<'_>) -> Result<Self, DBError> {
         Ok(Document {
-            id: value.get(0)?,
-            path: value.get(1)?,
-            filename: value.get(2)?,
-            description: value.get(3)?,
+            id: value.get(0).map_err(|_| DBError::FetchError)?,
+            path: value.get(1).map_err(|_| DBError::FetchError)?,
+            filename: value.get(2).map_err(|_| DBError::FetchError)?,
+            description: value.get(3).map_err(|_| DBError::FetchError)?,
         })
     }
 }
