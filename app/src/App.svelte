@@ -181,7 +181,7 @@ window.getlangs = getLangs;
 				{#await net.getDailyMessage()}
 					<p class="loading has-text-link" />
 				{:then msg}
-					<p style="margin-bottom: 0;">
+					<p style="margin-bottom: 1rem;">
 						{dict.daily_message}{#if !msg.error}<span
 								>: {msg.data}</span
 							>{/if}
@@ -191,7 +191,6 @@ window.getlangs = getLangs;
 				{/await}
 			</div>
 		</div>
-		<svg id="visual" viewBox="0 0 860 80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><path d="M0 57L21.5 60.5C43 64 86 71 128.8 70.3C171.7 69.7 214.3 61.3 257.2 60.3C300 59.3 343 65.7 385.8 70C428.7 74.3 471.3 76.7 514.2 76.5C557 76.3 600 73.7 642.8 68.7C685.7 63.7 728.3 56.3 771.2 54.2C814 52 857 55 878.5 56.5L900 58L900 0L878.5 0C857 0 814 0 771.2 0C728.3 0 685.7 0 642.8 0C600 0 557 0 514.2 0C471.3 0 428.7 0 385.8 0C343 0 300 0 257.2 0C214.3 0 171.7 0 128.8 0C86 0 43 0 21.5 0L0 0Z" fill="#5755d9" stroke-linecap="round" stroke-linejoin="miter"></path></svg>
 		<ul class="tab tab-block">
 			<li class="tab-item {tab == 0 ? 'active' : ''}">
 				<a
@@ -225,14 +224,7 @@ window.getlangs = getLangs;
 					}}>{dict.exam}</a
 				>
 			</li>
-			<li class="tab-item {tab == 6 ? 'active' : ''}">
-				<a
-					href="#documents"
-					on:click={() => {
-						tab = 6;
-					}}>{dict.documents}</a
-				>
-			</li>
+			
 			<li class="tab-item {tab == 3 ? 'active' : ''}">
 				<a
 					href="#network"

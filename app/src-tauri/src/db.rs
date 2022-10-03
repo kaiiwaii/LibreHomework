@@ -8,7 +8,6 @@ pub struct DBManager(pub Mutex<Connection>);
 impl DBManager {
     pub fn prepare_connection(path: &std::path::Path) -> Result<DBManager, DBError> {
         let conn = Connection::open(path).map_err(|_| DBError::SetupError)?;
-
         conn.execute(
             "CREATE TABLE IF NOT EXISTS Subjects (
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -33,7 +32,7 @@ impl DBManager {
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
           title TEXT NOT NULL,
           description TEXT,
-          subject TEXT NOT NULL
+          subject TEXT NOT NULL,
           FOREIGN KEY(subject) REFERENCES Subjects(name));
           ",
             [],

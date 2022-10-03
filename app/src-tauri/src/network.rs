@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use crate::errors::NetworkError;
 
-const APIURL: &str = "https://librehomework-server.onrender.com/";
+const APIURL: &str = "https://kai.fluffyswap.com/";
 
 #[derive(Deserialize, Serialize)]
 pub struct ApiResponse {

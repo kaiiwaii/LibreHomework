@@ -50,7 +50,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         };
     }
     appdir.push("LibreHomework.db");
-
     let app = tauri::Builder::default()
         .manage(DBManager::prepare_connection(appdir.as_path())?)
         .invoke_handler(tauri::generate_handler![
